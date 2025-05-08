@@ -13,6 +13,7 @@ import FileUploadComponent from './components/FileUploadComponent';
 import { processInvoices } from './services/ocrService';
 import { exportToCSV } from './utils/exportUtils';
 import SupplierMatchingPanel from './components/SupplierMatchingPanel';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 function App() {
   const [files, setFiles] = useState([]);
@@ -45,10 +46,27 @@ function App() {
       console.log('Starting to process invoices:', files.length);
       const result = await processInvoices(files);
       console.log('Processing complete:', result.data.length, 'rows extracted');
-      setProcessedData(result.data);
+
+      // Add a unique ID and fileName to each row if not present
+      const dataWithIds = result.data.map((item, index) => {
+        // If the item doesn't have a fileName, try to get it from the original file
+        const fileName =
+          item.fileName ||
+          (item.fileIndex !== undefined && files[item.fileIndex]
+            ? files[item.fileIndex].name
+            : `File-${index % files.length}`);
+
+        return {
+          ...item,
+          id: item.id || `row-${index}`,
+          fileName: fileName,
+        };
+      });
+
+      setProcessedData(dataWithIds);
 
       // Generate columns dynamically based on the data
-      const dynamicColumns = generateColumns(result.data);
+      const dynamicColumns = generateColumns(dataWithIds);
       setColumns(dynamicColumns);
 
       // Check if any errors occurred
@@ -89,7 +107,7 @@ function App() {
     });
 
     // Create column definitions
-    return Array.from(allKeys)
+    const dynamicColumns = Array.from(allKeys)
       .filter((key) => key !== 'id') // Keep id in data but don't show as column
       .map((key) => ({
         field: key,
@@ -98,18 +116,76 @@ function App() {
         flex: 1,
         editable: true,
       }));
+
+    // Add a delete button column
+    dynamicColumns.push({
+      field: 'delete',
+      headerName: 'Delete',
+      sortable: false,
+      filterable: false,
+      renderCell: (params) => (
+        <Button
+          variant='contained'
+          color='error'
+          size='small'
+          onClick={() => handleDeleteRow(params.id)}
+          startIcon={<DeleteIcon />}
+        >
+          Delete
+        </Button>
+      ),
+      flex: 0.5,
+    });
+
+    return dynamicColumns;
   };
+
+  // Handle row deletion
+  const handleDeleteRow = (id) => {
+    const updatedData = processedData.filter((row) => row.id !== id);
+    setProcessedData(updatedData);
+  };
+
+  // Update columns when processedData changes
+  useEffect(() => {
+    if (processedData.length > 0) {
+      const dynamicColumns = generateColumns(processedData);
+      setColumns(dynamicColumns);
+    }
+  }, [processedData]);
 
   // Handle cell edit in the data grid
   const handleCellEdit = (params) => {
+    const { id, field, value } = params;
+
+    // Update the specific row in processedData
     const updatedData = processedData.map((row) => {
-      if (row.id === params.id) {
-        return { ...row, [params.field]: params.value };
+      if (row.id === id) {
+        return { ...row, [field]: value }; // Update the specific field with the new value
       }
       return row;
     });
 
-    setProcessedData(updatedData);
+    console.log('Updated data after cell edit:', updatedData);
+    setProcessedData(updatedData); // Update the state with the modified data
+  };
+
+  // Callback to handle updates from SupplierMatchingPanel
+  const handleSupplierMatchUpdate = (updatedRowData) => {
+    // Update the specific row in processedData by its ID
+    const updatedData = processedData.map((row) => {
+      if (row.id === updatedRowData.id) {
+        // Create a new object that merges the original row with the updates
+        const updatedRow = { ...row, ...updatedRowData };
+
+        console.log('Updating row:', row.id, 'with new data:', updatedRowData);
+        return updatedRow;
+      }
+      return row;
+    });
+
+    console.log('Updated processed data after supplier match:', updatedData);
+    setProcessedData(updatedData); // Update the state with the modified data
   };
 
   return (
@@ -163,7 +239,12 @@ function App() {
             columns={columns}
             pageSizeOptions={[10, 25, 50, 100]}
             autoHeight
-            onCellEditCommit={handleCellEdit}
+            onCellEditStop={(params, event) => {
+              // Only update if the value has actually changed
+              if (params.value !== params.row[params.field]) {
+                handleCellEdit(params);
+              }
+            }}
             initialState={{
               pagination: {
                 paginationModel: { pageSize: 10 },
@@ -176,7 +257,7 @@ function App() {
 
       <SupplierMatchingPanel
         processedData={processedData}
-        onUpdate={(updatedData) => setProcessedData(updatedData)}
+        onUpdate={handleSupplierMatchUpdate}
       />
     </Container>
   );

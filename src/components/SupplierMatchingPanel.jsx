@@ -12,63 +12,95 @@ import {
   TableHead,
   TableRow,
   Button,
+  Chip,
 } from '@mui/material';
 import { supplierCodes } from '../utils/supplierCodes';
 
 const SupplierMatchingPanel = ({ processedData, onUpdate }) => {
-  const [supplierMatches, setSupplierMatches] = useState([]);
+  const [invoiceMatches, setInvoiceMatches] = useState([]);
 
   useEffect(() => {
     if (processedData && processedData.length > 0) {
-      // Extract unique suppliers from the processed data and filter out undefined values
-      const uniqueSuppliers = [
-        ...new Set(
-          processedData.map((item) => item.supplierName).filter((name) => name) // Filter out undefined/null values
-        ),
-      ];
+      // Group the processed data by invoice filename
+      const invoiceGroups = {};
 
-      // Create initial matches with proper null checks
-      const initialMatches = uniqueSuppliers.map((supplierName) => {
+      processedData.forEach((item) => {
+        const fileName = item.fileName || 'Unknown File';
+        if (!invoiceGroups[fileName]) {
+          invoiceGroups[fileName] = {
+            fileName,
+            supplierName: item.supplierName || 'Unknown Supplier',
+            supplierCode: item.supplierCode || '',
+            invoiceNumber: item.invoiceNumber || '',
+            rowIds: [], // track all row IDs associated with this invoice
+          };
+        }
+        invoiceGroups[fileName].rowIds.push(item.id);
+      });
+
+      // Create an array of invoice matches from the groups
+      const initialMatches = Object.values(invoiceGroups).map((invoice) => {
         // Try to find a match in the supplier codes list with null safety
         const matchedSupplier = supplierCodes.find((s) => {
-          if (!supplierName || !s.name) return false;
+          if (!invoice.supplierName || !s.name) return false;
           return (
-            s.name.toLowerCase().includes(supplierName.toLowerCase()) ||
-            supplierName.toLowerCase().includes(s.name.toLowerCase())
+            s.name.toLowerCase().includes(invoice.supplierName.toLowerCase()) ||
+            invoice.supplierName.toLowerCase().includes(s.name.toLowerCase())
           );
         });
 
         return {
-          supplierName,
-          matchedCode: matchedSupplier ? matchedSupplier.code : '',
-          confidence: matchedSupplier ? 'high' : 'none',
+          fileName: invoice.fileName,
+          supplierName: invoice.supplierName,
+          invoiceNumber: invoice.invoiceNumber,
+          matchedCode:
+            invoice.supplierCode ||
+            (matchedSupplier ? matchedSupplier.code : ''),
+          confidence: invoice.supplierCode
+            ? 'high'
+            : matchedSupplier
+            ? 'medium'
+            : 'none',
+          rowIds: invoice.rowIds,
         };
       });
 
-      setSupplierMatches(initialMatches);
+      setInvoiceMatches(initialMatches);
     }
   }, [processedData]);
 
   // Update supplier code in processed data
-  const handleSupplierCodeUpdate = (supplierName, newCode) => {
-    // Update the supplier matches
-    const updatedMatches = supplierMatches.map((match) => {
-      if (match.supplierName === supplierName) {
-        return { ...match, matchedCode: newCode };
+  const handleSupplierCodeUpdate = (fileName, rowIds, newCode) => {
+    // Get the matched supplier details
+    const selectedSupplier = supplierCodes.find((s) => s.code === newCode);
+
+    // Update the invoice matches
+    const updatedMatches = invoiceMatches.map((match) => {
+      if (match.fileName === fileName) {
+        return {
+          ...match,
+          matchedCode: newCode,
+          confidence: selectedSupplier ? 'high' : 'low',
+        };
       }
       return match;
     });
-    setSupplierMatches(updatedMatches);
+    setInvoiceMatches(updatedMatches);
 
-    // Update the processed data
-    const updatedData = processedData.map((item) => {
-      if (item.supplierName === supplierName) {
-        return { ...item, supplierCode: newCode };
+    // Update all rows associated with this invoice
+    rowIds.forEach((rowId) => {
+      const updates = {
+        id: rowId,
+        supplierCode: newCode,
+      };
+
+      // Update supplier name if we have a standardized name
+      if (selectedSupplier && selectedSupplier.name) {
+        updates.supplierName = selectedSupplier.name;
       }
-      return item;
-    });
 
-    onUpdate(updatedData);
+      onUpdate(updates);
+    });
   };
 
   if (!processedData || processedData.length === 0) {
@@ -78,14 +110,16 @@ const SupplierMatchingPanel = ({ processedData, onUpdate }) => {
   return (
     <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
       <Typography variant='h6' gutterBottom>
-        Supplier Matching
+        Invoice Supplier Matching
       </Typography>
 
-      {supplierMatches.length > 0 ? (
+      {invoiceMatches.length > 0 ? (
         <TableContainer>
           <Table size='small'>
             <TableHead>
               <TableRow>
+                <TableCell>File Name</TableCell>
+                <TableCell>Invoice Number</TableCell>
                 <TableCell>Detected Supplier</TableCell>
                 <TableCell>Matched Code</TableCell>
                 <TableCell>Confidence</TableCell>
@@ -93,8 +127,14 @@ const SupplierMatchingPanel = ({ processedData, onUpdate }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {supplierMatches.map((match, index) => (
-                <TableRow key={index}>
+              {invoiceMatches.map((match, index) => (
+                <TableRow key={index} hover>
+                  <TableCell>
+                    <Typography variant='body2' noWrap sx={{ maxWidth: 180 }}>
+                      {match.fileName}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>{match.invoiceNumber || '—'}</TableCell>
                   <TableCell>{match.supplierName}</TableCell>
                   <TableCell>
                     <Autocomplete
@@ -105,7 +145,8 @@ const SupplierMatchingPanel = ({ processedData, onUpdate }) => {
                       }
                       onChange={(event, newValue) => {
                         handleSupplierCodeUpdate(
-                          match.supplierName,
+                          match.fileName,
+                          match.rowIds,
                           newValue ? newValue.code : ''
                         );
                       }}
@@ -118,10 +159,21 @@ const SupplierMatchingPanel = ({ processedData, onUpdate }) => {
                       )}
                       size='small'
                       sx={{ minWidth: 300 }}
+                      isOptionEqualToValue={(option, value) =>
+                        option && value && option.code === value.code
+                      }
                     />
                   </TableCell>
                   <TableCell>
-                    {match.confidence === 'high' ? 'High' : 'Not matched'}
+                    {match.confidence === 'high' && (
+                      <Chip label='High' size='small' color='success' />
+                    )}
+                    {match.confidence === 'medium' && (
+                      <Chip label='Medium' size='small' color='primary' />
+                    )}
+                    {match.confidence === 'none' && (
+                      <Chip label='Not matched' size='small' color='default' />
+                    )}
                   </TableCell>
                   <TableCell>
                     <Button
@@ -139,7 +191,8 @@ const SupplierMatchingPanel = ({ processedData, onUpdate }) => {
 
                         if (matchedSupplier) {
                           handleSupplierCodeUpdate(
-                            match.supplierName,
+                            match.fileName,
+                            match.rowIds,
                             matchedSupplier.code
                           );
                         }
@@ -154,7 +207,7 @@ const SupplierMatchingPanel = ({ processedData, onUpdate }) => {
           </Table>
         </TableContainer>
       ) : (
-        <Typography>No supplier data to match</Typography>
+        <Typography>No invoice data to match</Typography>
       )}
     </Paper>
   );
