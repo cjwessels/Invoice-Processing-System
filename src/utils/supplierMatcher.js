@@ -13,7 +13,6 @@ export const matchSupplier = (supplierName) => {
   if (!supplierName || supplierName === 'Unknown Supplier') {
     return { code: '', confidence: 'none' };
   }
-
   // Direct match first (case insensitive)
   const directMatch = supplierCodes.find(
     (s) => s.name.toLowerCase() === supplierName.toLowerCase()

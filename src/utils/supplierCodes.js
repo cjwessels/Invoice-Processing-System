@@ -1,5 +1,5 @@
 export const supplierCodes = [
-  { code: 'ADT', name: 'Fedelity ADT' },
+  { code: 'ADT', name: 'Fidelity ADT' },
   { code: 'ADTLBC', name: 'ADT FEDELITY LBC' },
   { code: 'B/WEST', name: 'Beaufort West Municipality' },
   { code: 'BLACK', name: 'Blacklist Security Services (Pty) Ltd' },

@@ -37,7 +37,9 @@ const extractSupplierName = (text, fileName) => {
   // Check for common supplier patterns in text
   const supplierPatterns = [
     { regex: /MOSSEL BAY MUNICIPALITY/i, name: 'Mossel Bay Municipality' },
+    { regex: /Bridoon Trade and Invest 197/i, name: 'Nashua Cape Town' },
     { regex: /MATZIKAMA MUNISIPALITEIT/i, name: 'Matzikama Municipality' },
+    { regex: /MATZIKAMA MUNICIPALITY/i, name: 'Matzikama Municipality' },
     { regex: /HESSEQUA/i, name: 'Hessequa Municipality' },
     { regex: /THEEWATERSKLOOF/i, name: 'Theewaterskloof Municipality' },
     { regex: /GEORGE MUNICIPALITY/i, name: 'George Municipality' },
@@ -100,10 +102,14 @@ const extractInvoiceDate = (text) => {
   const invoiceDatePatterns = [
     /Invoice Date:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
     /Invoice Date:?\s*(\d{1,2}\s+[A-Za-z]+\s+\d{2,4})/i,
+    /Invoice Date?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
+    /Invoice Date?\s*(\d{1,2}\s+[A-Za-z]+\s+\d{2,4})/i,
     /Date:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
+    /Date?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
     /DATE OF ACCOUNT:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
     /STATEMENT DATE:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
     /DATUM VAN STAAT:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
+    /Date\s+(\d{2}\/\d{2}\/\d{4})/i,
   ];
 
   for (const pattern of invoiceDatePatterns) {
@@ -122,6 +128,8 @@ const extractDueDate = (text) => {
   const dueDatePatterns = [
     /Due Date:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
     /DUE DATE:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
+    /Due Date?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
+    /DUE DATE?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
     /Payment\s*must\s*be\s*made.*?by:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
     /PAY(ABLE|MENT)\s*(BEFORE|BY):?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
     /VERVAL\s*DATUM:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
