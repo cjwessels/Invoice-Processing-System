@@ -99,7 +99,14 @@ const extractInvoiceNumber = (text) => {
 // Extract invoice date
 const extractInvoiceDate = (text) => {
   // Common patterns for invoice dates
+
+  // Nashua Cape Town:
+
+  const nashuaInvoiceDatePatterns = [/s*(\d{4}\/\d{2}\/\d{2})/i];
+
+  //^\d{4}/\d{2}/\d{2}$
   const invoiceDatePatterns = [
+    // /s*(\d{4}\/\d{2}\/\d{2})/i,
     /Invoice Date:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
     /Invoice Date:?\s*(\d{1,2}\s+[A-Za-z]+\s+\d{2,4})/i,
     /Invoice Date?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
@@ -112,10 +119,22 @@ const extractInvoiceDate = (text) => {
     /Date\s+(\d{2}\/\d{2}\/\d{4})/i,
   ];
 
-  for (const pattern of invoiceDatePatterns) {
+  let useDatePattern = [];
+
+  console.log('text:', text);
+
+  if (text.includes('Bridoon Trade and Invest 197')) {
+    // NASHUA invoice date check
+    useDatePattern = nashuaInvoiceDatePatterns;
+  } else {
+    useDatePattern = invoiceDatePatterns;
+  }
+
+  for (const pattern of useDatePattern) {
     const match = text.match(pattern);
     if (match && match[1]) {
-      return parseDate(match[1]);
+      // return parseDate(match[1]);
+      return match[1];
     }
   }
 
@@ -215,7 +234,10 @@ const extractLineItems = (text) => {
   const tableLineRegex =
     /\b([A-Z0-9-]+)\s+([A-Za-z0-9 .,\/-]+)\s+(\d+(?:\.\d+)?)\s+(?:R|ZAR)?\s*(\d+(?:,\d+)?(?:\.\d+)?)\s+(?:R|ZAR)?\s*(\d+(?:,\d+)?(?:\.\d+)?)/g;
   let match;
-  while ((match = tableLineRegex.exec(text)) !== null) {
+  while (
+    (match = tableLineRegex.exec(text)) !== null &&
+    !text.includes('Bridoon Trade and Invest 197')
+  ) {
     lineItems.push({
       itemCode: match[1].trim(),
       description: match[2].trim(),
@@ -254,6 +276,82 @@ const extractLineItems = (text) => {
         unitPrice: match[4].trim().replace(/,/g, ''),
         amount: match[5].trim().replace(/,/g, ''),
       });
+    }
+  }
+
+  // Approach 4: Look for NASHUA style items
+  function extractNashuaLineItems(text) {
+    const lineItems = [];
+
+    // First, find the section that contains the tabular data
+    // Look for the section between the headers and the totals
+    const tableSection = text.match(
+      /Description\s+Qty\s+Unit\s+Price\s+Price\s+VAT\s+Total([\s\S]*?)Total \(excl VAT\)/
+    );
+
+    if (tableSection && tableSection[1]) {
+      const tableContent = tableSection[1].trim();
+      console.log('Table Content:', tableContent);
+
+      // Pattern to match line items in the format: Description Qty Unit Price Price VAT Total
+      const lineItemRegex =
+        /([^\n]+?)\s+(\d+(?:\.\d+)?)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)/g;
+
+      let match;
+      while ((match = lineItemRegex.exec(tableContent)) !== null) {
+        lineItems.push({
+          description: match[1].trim(),
+          quantity: match[2].trim(),
+          unitPrice: match[3].trim(),
+          price: match[4].trim(),
+          vat: match[5].trim(),
+          total: match[6].trim(),
+        });
+      }
+    }
+
+    return lineItems;
+  }
+
+  // For specific NASHUA invoice format (Bridoon Trade and Invest 197)
+  if (text.includes('Bridoon Trade and Invest 197')) {
+    const nashuaLineItems = extractNashuaLineItems(text);
+    if (nashuaLineItems.length > 0) {
+      lineItems.push(...nashuaLineItems);
+    } else {
+      // Fallback for the specific structure in this invoice
+      // The format appears to be different from standard tabular format
+      const specialFormatRegex =
+        /\* ([^*]+) \*\s+(?:Captured[^\n]+\s+)?Start\s*:\s*(\d+)\s+End\s*:\s*(\d+)\s+(?:Copies Made at Tier (?:\d+)\s+)?(?:[^\n]+\s+)*?(\d+)\s+([\d.]+)\s+([\d.]+)/g;
+
+      let match;
+      while ((match = specialFormatRegex.exec(text)) !== null) {
+        console.log(match);
+        const meterType = match[1].trim();
+        const startReading = match[2].trim();
+        const endReading = match[3].trim();
+        const quantity = match[5].trim();
+        const unitPrice = match[6].trim();
+        const price = match[6].trim();
+
+        lineItems.push({
+          description: `${meterType} Meter (${startReading}-${endReading})`,
+          quantity: quantity,
+          unitPrice: unitPrice,
+          price: price,
+        });
+      }
+
+      // Look for minimum charge entries
+      const minChargeRegex = /Min\.Copy\s+Chg(?:\s+Shortfall)?\s+([\d.]+)/g;
+      while ((match = minChargeRegex.exec(text)) !== null) {
+        lineItems.push({
+          description: 'Minimum Copy Charge',
+          quantity: '1',
+          unitPrice: match[1].trim(),
+          price: match[1].trim(),
+        });
+      }
     }
   }
 

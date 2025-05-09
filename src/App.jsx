@@ -92,6 +92,7 @@ function App() {
       setError('No data to export');
       return;
     }
+    console.log('Exporting data:', processedData);
 
     exportToCSV(processedData, 'invoice_data.csv');
   };
@@ -166,7 +167,6 @@ function App() {
       return row;
     });
 
-    console.log('Updated data after cell edit:', updatedData);
     setProcessedData(updatedData); // Update the state with the modified data
   };
 
