@@ -63,19 +63,26 @@ const extractInvoiceNumber = (text, supplierName) => {
   return 'Unknown';
 };
 
-// Extract invoice date
+// Extract invoice date - now looks for first matching date format
 const extractInvoiceDate = (text) => {
-  // Common patterns for invoice dates
-  const invoiceDatePatterns = [
-    /Invoice Date:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
-    /Date:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
-    /DATE OF ACCOUNT:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
+  // Common date formats
+  const datePatterns = [
+    // DD/MM/YYYY or DD-MM-YYYY or DD.MM.YYYY
+    /\b(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})\b/,
+    // YYYY/MM/DD
+    /\b(\d{4}[\/.-]\d{1,2}[\/.-]\d{1,2})\b/,
+    // Month DD, YYYY or DD Month YYYY
+    /\b(\d{1,2}\s+[A-Za-z]+\s+\d{4})\b|\b([A-Za-z]+\s+\d{1,2},?\s+\d{4})\b/,
+    // ISO format YYYY-MM-DD
+    /\b(\d{4}-\d{2}-\d{2})\b/
   ];
 
-  for (const pattern of invoiceDatePatterns) {
+  for (const pattern of datePatterns) {
     const match = text.match(pattern);
-    if (match && match[1]) {
-      return parseDate(match[1]);
+    if (match) {
+      // Use the first captured group or the full match
+      const dateStr = match[1] || match[0];
+      return parseDate(dateStr);
     }
   }
 
