@@ -67,7 +67,7 @@ const extractSupplierName = (text, fileName) => {
       regex: /Theewaterskloof Municipality/i,
       name: 'Theewaterskloof Municipality',
     },
-    { code: 'WISMEL', name: 'Wispernet Melkhoutfontein' }
+    { regex: /Wispernet Melkhoutfontein/, name: 'Wispernet Melkhoutfontein' }
     // Add other patterns as needed
   ];
 
