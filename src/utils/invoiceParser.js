@@ -35,3 +35,13 @@ const extractInvoiceNumber = (text, supplierName) => {
 
   return 'Unknown';
 };
+
+export const extractInvoiceData = (text, fileName) => {
+  const invoiceNumber = extractInvoiceNumber(text);
+  
+  return {
+    invoiceNumber,
+    // Add other extracted data here as needed
+    supplierName: text.includes("Mustek Limited") ? "Mustek Limited" : "Unknown"
+  };
+};
