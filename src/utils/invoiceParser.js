@@ -1,27 +1,55 @@
+import { parseDate } from './dateUtils';
+
+// Extract supplier name based on patterns in the text or filename
+const extractSupplierName = (text, fileName) => {
+  // Check for common supplier patterns in text
+  const supplierPatterns = [
+    { regex: /Mustek Limited/i, name: 'Mustek Limited' },
+    // ... other supplier patterns ...
+  ];
+
+  for (const pattern of supplierPatterns) {
+    if (pattern.regex.test(text)) {
+      return pattern.name;
+    }
+  }
+
+  return 'Unknown Supplier';
+};
+
 // Extract invoice number
 const extractInvoiceNumber = (text, supplierName) => {
   // Special handling for Mustek invoices
   if (supplierName === 'Mustek Limited') {
-    // First find CUSTOMER REF2
+    // Find CUSTOMER REF2
     const customerRef2Index = text.indexOf('CUSTOMER REF2');
     if (customerRef2Index !== -1) {
-      // Get the text after CUSTOMER REF2
+      // Get the text after CUSTOMER REF2, excluding "Invoice To:"
       const textAfterRef2 = text.substring(customerRef2Index);
+      const cleanedText = textAfterRef2.replace(/Invoice To:/g, '');
+      
       // Look for the invoice number pattern
       const invoicePattern = /\bINV-\d{7} [A-Za-z0-9]{2}\b/;
-      const match = textAfterRef2.match(invoicePattern);
+      const match = cleanedText.match(invoicePattern);
       if (match) {
         return match[0];
       }
+      
+      // If no match found, return the block of text following CUSTOMER REF2
+      const nextLineBreak = cleanedText.indexOf('\n');
+      if (nextLineBreak !== -1) {
+        return cleanedText.substring(0, nextLineBreak).trim();
+      }
+      return cleanedText.trim();
     }
   }
 
-  // Common patterns for invoice numbers
+  // Common patterns for other invoices
   const invoiceNumberPatterns = [
+    /Tax Invoice No[.:]\s*([A-Z0-9-]+)/i,
     /Invoice\s*(?:Number|No|#|:|Number:)\s*([A-Z0-9-]+)/i,
     /Invoice\s*(?::|#)\s*([A-Z0-9-]+)/i,
     /INV(?:OICE)?\s*(?::|#|No|Number)?\s*([A-Z0-9-]+)/i,
-    /Tax Invoice No[.:]\s*([A-Z0-9-]+)/i,
     /Document No\s*([A-Z0-9-]+)/i,
     /BELASTING FAKTUUR NR[.:]\s*([A-Z0-9-]+)/i,
   ];
@@ -36,12 +64,48 @@ const extractInvoiceNumber = (text, supplierName) => {
   return 'Unknown';
 };
 
+// Extract invoice date
+const extractInvoiceDate = (text) => {
+  // Common patterns for invoice dates
+  const invoiceDatePatterns = [
+    /Invoice Date:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
+    /Date:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
+    /DATE OF ACCOUNT:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
+  ];
+
+  for (const pattern of invoiceDatePatterns) {
+    const match = text.match(pattern);
+    if (match && match[1]) {
+      return parseDate(match[1]);
+    }
+  }
+
+  return 'Unknown';
+};
+
+// Main function to extract data from invoice text
 export const extractInvoiceData = (text, fileName) => {
-  const invoiceNumber = extractInvoiceNumber(text);
+  const cleanText = text.replace(/\s+/g, ' ').trim();
   
+  // Extract supplier name first
+  const supplierName = extractSupplierName(cleanText, fileName);
+  
+  // Extract invoice number (passing supplierName for special handling)
+  const invoiceNumber = extractInvoiceNumber(cleanText, supplierName);
+  
+  // Extract dates
+  const invoiceDate = extractInvoiceDate(cleanText);
+
   return {
+    supplierName,
     invoiceNumber,
-    // Add other extracted data here as needed
-    supplierName: text.includes("Mustek Limited") ? "Mustek Limited" : "Unknown"
+    invoiceDate,
+    dueDate: 'Unknown', // Add other date extraction if needed
+    description: '',
+    quantity: '',
+    unitPrice: '',
+    subtotal: '',
+    tax: '',
+    total: '',
   };
 };
