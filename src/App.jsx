@@ -91,7 +91,7 @@ function App() {
 
   const formatDateForFileName = (dateString) => {
     if (!dateString || dateString === 'Unknown') return 'unknown_date';
-    return dateString.replace(/[\/.-]/g, '');
+    return dateString.replace(/[\/.-]/g, '_');
   };
 
   const handleRenameAndMove = async () => {
@@ -108,7 +108,7 @@ function App() {
 
       for (const item of processedData) {
         const formattedDate = formatDateForFileName(item.invoiceDate);
-        const newFileName = `${item.supplierName}-${item.supplierCode}-${formattedDate}-${item.invoiceNumber}.pdf`
+        const newFileName = `${item.supplierName}_${item.supplierCode}_${formattedDate}_${item.invoiceNumber}.pdf`
           .replace(/[<>:"/\\|?*]/g, '_')
           .replace(/\s+/g, '_');
 
@@ -123,6 +123,7 @@ function App() {
           body: JSON.stringify({
             sourcePath: `${sourcePath}\\${item.fileName}`,
             targetPath: `${processedPath}\\${newFileName}`,
+            useCopyMethod: true, // Signal to use copy-then-delete approach
           }),
         });
 

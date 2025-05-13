@@ -3,14 +3,18 @@ import path from 'node:path';
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-async function tryMove(sourcePath, targetPath, retries = 3, delayMs = 1000) {
+async function copyFile(sourcePath, targetPath) {
+  await fs.copyFile(sourcePath, targetPath);
+}
+
+async function deleteFile(filePath, retries = 3, delayMs = 1000) {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      await fs.rename(sourcePath, targetPath);
-      return { success: true };
+      await fs.unlink(filePath);
+      return;
     } catch (error) {
       if (error.code === 'EBUSY' && attempt < retries) {
-        console.log(`File busy, retrying in ${delayMs}ms... (Attempt ${attempt}/${retries})`);
+        console.log(`File busy during deletion, retrying in ${delayMs}ms... (Attempt ${attempt}/${retries})`);
         await delay(delayMs);
         continue;
       }
@@ -24,10 +28,15 @@ export async function moveFile(sourcePath, targetPath) {
     // Create the target directory if it doesn't exist
     await fs.mkdir(path.dirname(targetPath), { recursive: true });
     
-    // Try to move the file with retries
-    return await tryMove(sourcePath, targetPath);
+    // First copy the file
+    await copyFile(sourcePath, targetPath);
+    
+    // Then delete the original file
+    await deleteFile(sourcePath);
+    
+    return { success: true };
   } catch (error) {
-    console.error('Error moving file:', error);
+    console.error('Error during file operation:', error);
     throw new Error(`Failed to move file: ${error.message}`);
   }
 }
