@@ -10,18 +10,32 @@ export const processPDF = async (file) => {
     // Load the PDF with PDF.js
     const pdf = await pdfjs.getDocument({ data: arrayBuffer }).promise;
 
-    // Process each page
+    // Process only the first page for Mustek invoices
+    // For other invoices, we'll still process all pages
     const pageTexts = [];
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const textContent = await page.getTextContent();
-
-      // Extract text content
-      const pageText = textContent.items.map((item) => item.str).join(' ');
-      pageTexts.push(pageText);
+    
+    // Always process at least the first page
+    const page = await pdf.getPage(1);
+    const textContent = await page.getTextContent();
+    const pageText = textContent.items.map((item) => item.str).join(' ');
+    pageTexts.push(pageText);
+    
+    // Check if this is a Mustek invoice by looking for "Mustek Limited" in the first page
+    const isMustekInvoice = pageText.includes("Mustek Limited");
+    
+    // If it's not a Mustek invoice, process the remaining pages
+    if (!isMustekInvoice) {
+      for (let i = 2; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        const pageText = textContent.items.map((item) => item.str).join(' ');
+        pageTexts.push(pageText);
+      }
+    } else {
+      console.log(`Mustek invoice detected: ${file.name} - Processing only first page`);
     }
 
-    // Combine all page texts - skipping OCR for now due to issues
+    // Combine all page texts
     const fullText = pageTexts.join('\n\n');
 
     // Extract structured data from text
@@ -51,8 +65,26 @@ export const processInvoices = async (files) => {
       console.log(`Processing file: ${file.name}`);
       const fileData = await processPDF(file);
 
-      // For each line item, create a separate row with common invoice data
-      if (fileData.lineItems && fileData.lineItems.length > 0) {
+      // For Mustek invoices, create only one row per file
+      if (fileData.supplierName === 'Mustek Limited') {
+        processedData.push({
+          id: id++,
+          fileName: file.name,
+          invoiceNumber: fileData.invoiceNumber,
+          invoiceDate: fileData.invoiceDate,
+          dueDate: fileData.dueDate,
+          supplierName: fileData.supplierName,
+          supplierCode: fileData.supplierCode,
+          description: fileData.description || '',
+          quantity: fileData.quantity || '',
+          unitPrice: fileData.unitPrice || '',
+          subtotal: fileData.subtotal || '',
+          tax: fileData.tax || '',
+          total: fileData.total || '',
+        });
+      }
+      // For other invoices, handle line items as before
+      else if (fileData.lineItems && fileData.lineItems.length > 0) {
         fileData.lineItems.forEach((item) => {
           processedData.push({
             id: id++,
