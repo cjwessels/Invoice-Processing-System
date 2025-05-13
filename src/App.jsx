@@ -65,7 +65,6 @@ function App() {
     setProcessedData(updatedData);
   };
 
-  // Format date from YYYY-MM-DD to YYYYMMDD for file naming
   const formatDateForFileName = (dateString) => {
     if (!dateString || dateString === 'Unknown') return 'unknown_date';
     return dateString.replace(/-/g, '');
@@ -81,7 +80,6 @@ function App() {
         throw new Error('Processed files path not configured');
       }
 
-      // Create an array of file operations
       const operations = processedData.map(item => {
         const originalFile = files.find(f => f.name === item.fileName);
         if (!originalFile) {
@@ -90,8 +88,8 @@ function App() {
 
         const formattedDate = formatDateForFileName(item.invoiceDate);
         const newFileName = `${item.supplierName}-${item.supplierCode}-${formattedDate}-${item.invoiceNumber}.pdf`
-          .replace(/[<>:"/\\|?*]/g, '_') // Replace invalid characters
-          .replace(/\s+/g, '_'); // Replace spaces with underscores
+          .replace(/[<>:"/\\|?*]/g, '_')
+          .replace(/\s+/g, '_');
 
         return {
           file: originalFile,
@@ -99,7 +97,6 @@ function App() {
         };
       });
 
-      // Process each operation
       for (const op of operations) {
         const response = await fetch('/api/move-file', {
           method: 'POST',
@@ -107,17 +104,17 @@ function App() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            sourcePath: op.file.path,
+            sourcePath: op.file.path || `./${op.file.name}`, // Fallback to file name if path is not available
             targetPath: `${processedPath}/${op.newName}`,
           }),
         });
 
         if (!response.ok) {
-          throw new Error(`Failed to move file ${op.file.name}`);
+          const errorData = await response.json();
+          throw new Error(errorData.error || `Failed to move file ${op.file.name}`);
         }
       }
 
-      // Clear the files and processed data after successful move
       setFiles([]);
       setProcessedData([]);
       

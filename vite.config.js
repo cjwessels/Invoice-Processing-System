@@ -24,6 +24,15 @@ function fileOperationsMiddleware() {
               }
 
               try {
+                // Check if source file exists before attempting to move
+                try {
+                  await fs.access(sourcePath);
+                } catch (error) {
+                  res.statusCode = 404;
+                  res.end(JSON.stringify({ error: `Source file not found: ${sourcePath}` }));
+                  return;
+                }
+
                 // Create the target directory if it doesn't exist
                 await fs.mkdir(path.dirname(targetPath), { recursive: true });
                 
