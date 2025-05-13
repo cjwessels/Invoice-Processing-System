@@ -8,7 +8,7 @@ export const extractInvoiceData = (text, fileName) => {
   const supplierName = extractSupplierName(cleanText, fileName);
 
   // Extract invoice number
-  const invoiceNumber = extractInvoiceNumber(cleanText);
+  const invoiceNumber = extractInvoiceNumber(cleanText, supplierName);
 
   // Extract dates
   const invoiceDate = extractInvoiceDate(cleanText);
@@ -62,19 +62,21 @@ const extractSupplierName = (text, fileName) => {
 };
 
 // Extract invoice number
-const extractInvoiceNumber = (text) => {
+const extractInvoiceNumber = (text, supplierName) => {
+  // For Mustek invoices, get 15 characters after CUSTOMER REF2
+  if (supplierName === 'Mustek Limited') {
+    const customerRef2Pattern = /CUSTOMER REF2\s*(.{15})/i;
+    const customerRef2Match = text.match(customerRef2Pattern);
+    if (customerRef2Match && customerRef2Match[1]) {
+      return customerRef2Match[1].trim();
+    }
+  }
+
   // Check for Matzikama specific invoice number pattern
   const matzikamaBelastingPattern = /BELASTING FAKTUUR NR\.\s*(\S+)/i;
   const matzikamaBelastingMatch = text.match(matzikamaBelastingPattern);
   if (matzikamaBelastingMatch && matzikamaBelastingMatch[1]) {
     return matzikamaBelastingMatch[1].trim();
-  }
-
-  // Check for Mustek invoice number pattern
-  const mustekPattern = /Invoice No\s*:\s*([A-Z0-9-]+)/i;
-  const mustekMatch = text.match(mustekPattern);
-  if (mustekMatch && mustekMatch[1]) {
-    return mustekMatch[1].trim();
   }
 
   // Common patterns for invoice numbers as fallback
