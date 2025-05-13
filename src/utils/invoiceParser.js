@@ -54,7 +54,8 @@ const extractSupplierName = (text, fileName) => {
   
   // Check for Wispernet Melkhoutfontein
   if (text.includes('Wispernet') &&
-    text.toLowerCase().includes('Melkhoutfontein')) {
+    text.toLowerCase().includes('Melkhoutfontein')
+     ) {
     return 'Wispernet Melkhoutfontein';
   }
 
