@@ -76,10 +76,18 @@ const extractSupplierName = (text, fileName) => {
 const extractInvoiceNumber = (text, supplierName) => {
   // Special handling for Mustek invoices
   if (supplierName === 'Mustek Limited') {
-    const mustekInvoicePattern = /\bINV-\d{7} [A-Za-z0-9]{2}\b/;
+    // Look for TAX INVOICE NO. pattern for Mustek invoices
+    const mustekInvoicePattern = /TAX INVOICE NO\.?\s*([A-Z0-9-]+)/i;
     const match = text.match(mustekInvoicePattern);
-    if (match) {
-      return match[0];
+    if (match && match[1]) {
+      return match[1].trim();
+    }
+    
+    // Fallback to the regex pattern if TAX INVOICE NO. is not found
+    const fallbackPattern = /\bINV-\d{7} [A-Za-z0-9]{2}\b/;
+    const fallbackMatch = text.match(fallbackPattern);
+    if (fallbackMatch) {
+      return fallbackMatch[0];
     }
   }
 
