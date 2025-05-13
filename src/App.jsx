@@ -64,6 +64,12 @@ function App() {
     setProcessedData(updatedData);
   };
 
+  // Format date from DD/MM/YYYY to DD_MM_YYYY
+  const formatDateForFileName = (dateString) => {
+    if (!dateString || dateString === 'Unknown') return 'unknown_date';
+    return dateString.replace(/\//g, '_');
+  };
+
   const handleRenameAndMove = async () => {
     try {
       const processedPath = import.meta.env.VITE_PROCESSED_FILES_PATH;
@@ -73,7 +79,13 @@ function App() {
 
       // In a real implementation, you would handle the file operations here
       console.log('Files would be renamed and moved to:', processedPath);
-      console.log('Processed data:', processedData);
+      
+      // Log the renamed files with the new format
+      processedData.forEach(item => {
+        const formattedDate = formatDateForFileName(item.invoiceDate);
+        const newFileName = `${item.supplierName}-${item.supplierCode}-${formattedDate}-${item.invoiceNumber}.pdf`;
+        console.log(`Renaming ${item.fileName} to ${newFileName}`);
+      });
 
       setError(null);
     } catch (err) {

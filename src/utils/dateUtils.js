@@ -88,3 +88,9 @@ export const parseDate = (dateString) => {
   // If all parsing attempts fail, return the original string
   return cleanDate;
 };
+
+// Format date from DD/MM/YYYY to DD_MM_YYYY for file naming
+export const formatDateForFileName = (dateString) => {
+  if (!dateString || dateString === 'Unknown') return 'unknown_date';
+  return dateString.replace(/\//g, '_');
+};
