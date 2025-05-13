@@ -54,20 +54,24 @@ function fileOperationsMiddleware() {
               }
 
               try {
+                // Normalize paths for Windows
+                const normalizedSourcePath = path.normalize(sourcePath);
+                const normalizedTargetPath = path.normalize(targetPath);
+
                 // Check if source file exists
                 try {
-                  await fs.access(sourcePath);
+                  await fs.access(normalizedSourcePath);
                 } catch (error) {
                   res.statusCode = 404;
-                  res.end(JSON.stringify({ error: `Source file not found: ${sourcePath}` }));
+                  res.end(JSON.stringify({ error: `Source file not found: ${normalizedSourcePath}` }));
                   return;
                 }
 
                 // Create the target directory if it doesn't exist
-                await fs.mkdir(path.dirname(targetPath), { recursive: true });
+                await fs.mkdir(path.dirname(normalizedTargetPath), { recursive: true });
                 
                 // Move the file
-                await fs.rename(sourcePath, targetPath);
+                await fs.rename(normalizedSourcePath, normalizedTargetPath);
                 
                 res.statusCode = 200;
                 res.end(JSON.stringify({ success: true }));

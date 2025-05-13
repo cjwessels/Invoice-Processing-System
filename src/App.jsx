@@ -91,7 +91,7 @@ function App() {
 
   const formatDateForFileName = (dateString) => {
     if (!dateString || dateString === 'Unknown') return 'unknown_date';
-    return dateString.replace(/-/g, '');
+    return dateString.replace(/[\/.-]/g, '');
   };
 
   const handleRenameAndMove = async () => {
@@ -106,38 +106,26 @@ function App() {
         throw new Error('Source or processed files path not configured');
       }
 
-      const operations = processedData.map(item => {
-        const originalFile = files.find(f => f.name === item.fileName);
-        if (!originalFile) {
-          throw new Error(`Original file not found for ${item.fileName}`);
-        }
-
+      for (const item of processedData) {
         const formattedDate = formatDateForFileName(item.invoiceDate);
         const newFileName = `${item.supplierName}-${item.supplierCode}-${formattedDate}-${item.invoiceNumber}.pdf`
           .replace(/[<>:"/\\|?*]/g, '_')
           .replace(/\s+/g, '_');
 
-        return {
-          file: originalFile,
-          newName: newFileName,
-        };
-      });
-
-      for (const op of operations) {
         const response = await fetch('/api/move-file', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            sourcePath: `${sourcePath}/${op.file.name}`,
-            targetPath: `${processedPath}/${op.newName}`,
+            sourcePath: `${sourcePath}\\${item.fileName}`,
+            targetPath: `${processedPath}\\${newFileName}`,
           }),
         });
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || `Failed to move file ${op.file.name}`);
+          throw new Error(errorData.error || `Failed to move file ${item.fileName}`);
         }
       }
 
