@@ -112,6 +112,9 @@ function App() {
           .replace(/[<>:"/\\|?*]/g, '_')
           .replace(/\s+/g, '_');
 
+        // Add delay between file operations
+        await new Promise(resolve => setTimeout(resolve, 500));
+
         const response = await fetch('/api/move-file', {
           method: 'POST',
           headers: {
