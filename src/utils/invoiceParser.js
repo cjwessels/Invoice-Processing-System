@@ -35,7 +35,10 @@ export const extractInvoiceData = (text, fileName) => {
 // Extract supplier name based on patterns in the text or filename
 const extractSupplierName = (text, fileName) => {
   // Check for Matzikama Vredendal specific pattern
-  if (text.includes('headoff@matzikama.gov.za') && text.toLowerCase().includes('vredendal')) {
+  if (
+    text.includes('headoff@matzikama.gov.za') &&
+    text.toLowerCase().includes('vredendal')
+  ) {
     return 'Matzikama Municipality - Vredendal';
   }
 
@@ -44,11 +47,26 @@ const extractSupplierName = (text, fileName) => {
     return 'Mustek Limited';
   }
 
+  // Check for Mustek Limited
+  if (text.includes('Theewaterskloof')) {
+    return 'Theewaterskloof Municipality';
+  }
+
   // Check for common supplier patterns in text
   const supplierPatterns = [
-    { regex: /MATZIKAMA MUNISIPALITEIT/i, name: 'Matzikama Municipality - Vredendal' },
-    { regex: /MATZIKAMA MUNICIPALITY/i, name: 'Matzikama Municipality - Vredendal' },
+    {
+      regex: /MATZIKAMA MUNISIPALITEIT/i,
+      name: 'Matzikama Municipality - Vredendal',
+    },
+    {
+      regex: /MATZIKAMA MUNICIPALITY/i,
+      name: 'Matzikama Municipality - Vredendal',
+    },
     { regex: /Mustek Limited/i, name: 'Mustek Limited' },
+    {
+      regex: /Theewaterskloof Municipality/i,
+      name: 'Theewaterskloof Municipality',
+    },
     // Add other patterns as needed
   ];
 
@@ -77,6 +95,15 @@ const extractInvoiceNumber = (text, supplierName) => {
   const matzikamaBelastingMatch = text.match(matzikamaBelastingPattern);
   if (matzikamaBelastingMatch && matzikamaBelastingMatch[1]) {
     return matzikamaBelastingMatch[1].trim();
+  }
+
+  // For Theewaterskloof invoices, get 15 characters after CUSTOMER REF2
+  if (supplierName === 'Theewaterskloof Municipality') {
+    const theewaterskloofPattern = /(?:0201014014.*?){2}\s*(.{15})/i;
+    const theewaterskloofMatch = text.match(theewaterskloofPattern);
+    if (theewaterskloofMatch && theewaterskloofMatch[1]) {
+      return theewaterskloofMatch[1].trim();
+    }
   }
 
   // Common patterns for invoice numbers as fallback
@@ -221,7 +248,8 @@ const extractLineItems = (text, supplierName) => {
 
   // Special handling for Mustek invoices
   if (supplierName === 'Mustek Limited') {
-    const mustekItemPattern = /(\d+)\s+([A-Z0-9-]+)\s+([^]+?)\s+(\d+)\s+R\s*([\d,]+\.\d{2})\s+R\s*([\d,]+\.\d{2})\s+R\s*([\d,]+\.\d{2})\s+R\s*([\d,]+\.\d{2})/g;
+    const mustekItemPattern =
+      /(\d+)\s+([A-Z0-9-]+)\s+([^]+?)\s+(\d+)\s+R\s*([\d,]+\.\d{2})\s+R\s*([\d,]+\.\d{2})\s+R\s*([\d,]+\.\d{2})\s+R\s*([\d,]+\.\d{2})/g;
     let match;
 
     while ((match = mustekItemPattern.exec(text)) !== null) {
