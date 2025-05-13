@@ -108,9 +108,7 @@ function App() {
 
       for (const item of processedData) {
         const formattedDate = formatDateForFileName(item.invoiceDate);
-        const newFileName = `${item.supplierName}|${item.supplierCode}|${formattedDate}|${item.invoiceNumber}.pdf`
-          .replace(/[<>:"/\\|?*]/g, '_')
-          .replace(/\s+/g, '_');
+        const newFileName = `${item.supplierName}~${item.supplierCode}~${formattedDate}~${item.invoiceNumber}.pdf`;
 
         // Add delay between file operations
         await new Promise(resolve => setTimeout(resolve, 500));
