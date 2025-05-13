@@ -13,6 +13,12 @@ export const matchSupplier = (supplierName) => {
   if (!supplierName || supplierName === 'Unknown Supplier') {
     return { code: '', confidence: 'none' };
   }
+
+  // Special case for Matzikama Municipality - Vredendal
+  if (supplierName === 'Matzikama Municipality - Vredendal') {
+    return { code: 'MATVRE', confidence: 'high' };
+  }
+
   // Direct match first (case insensitive)
   const directMatch = supplierCodes.find(
     (s) => s.name.toLowerCase() === supplierName.toLowerCase()

@@ -30,14 +30,18 @@ const extractSupplierName = (text, fileName) => {
 
   // Check for common supplier patterns in text
   const supplierPatterns = [
-    { regex: /MATZIKAMA MUNISIPALITEIT/i, name: 'Matzikama Municipality' },
-    { regex: /MATZIKAMA MUNICIPALITY/i, name: 'Matzikama Municipality' },
+    { regex: /MATZIKAMA MUNISIPALITEIT/i, name: 'Matzikama Municipality - Vredendal' },
+    { regex: /MATZIKAMA MUNICIPALITY/i, name: 'Matzikama Municipality - Vredendal' },
     // ... other patterns ...
   ];
 
   for (const pattern of supplierPatterns) {
     if (pattern.regex.test(text)) {
-      return pattern.name;
+      // If we find Matzikama Municipality and Vredendal, return the Vredendal-specific name
+      if ((pattern.regex.test(text) && text.toLowerCase().includes('vredendal')) || 
+          text.includes('headoff@matzikama.gov.za')) {
+        return 'Matzikama Municipality - Vredendal';
+      }
     }
   }
 
@@ -74,7 +78,7 @@ const extractInvoiceNumber = (text) => {
 
 // Extract invoice date
 const extractInvoiceDate = (text) => {
-  // First try to find the exact date format for Matzikama invoices
+  // First try to find the exact date format for Matzikama invoices (DD/MM/YYYY)
   const matzikamaDates = text.match(/\b(\d{2}\/\d{2}\/\d{4})\b/g);
   if (matzikamaDates && matzikamaDates.length > 0) {
     // Return the first date found in DD/MM/YYYY format
