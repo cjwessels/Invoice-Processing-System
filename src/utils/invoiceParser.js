@@ -24,23 +24,22 @@ const extractInvoiceNumber = (text, supplierName) => {
     // Find CUSTOMER REF2
     const customerRef2Index = text.indexOf('CUSTOMER REF2');
     if (customerRef2Index !== -1) {
-      // Get the text after CUSTOMER REF2, excluding "Invoice To:"
-      const textAfterRef2 = text.substring(customerRef2Index);
-      const cleanedText = textAfterRef2.replace(/Invoice To:/g, '');
+      // Get the text after CUSTOMER REF2
+      const textAfterRef2 = text.substring(customerRef2Index + 'CUSTOMER REF2'.length);
+      
+      // Remove any "Invoice To:" text
+      const cleanedText = textAfterRef2.replace(/Invoice To:/g, '').trim();
       
       // Look for the invoice number pattern
       const invoicePattern = /\bINV-\d{7} [A-Za-z0-9]{2}\b/;
       const match = cleanedText.match(invoicePattern);
+      
       if (match) {
         return match[0];
       }
       
-      // If no match found, return the block of text following CUSTOMER REF2
-      const nextLineBreak = cleanedText.indexOf('\n');
-      if (nextLineBreak !== -1) {
-        return cleanedText.substring(0, nextLineBreak).trim();
-      }
-      return cleanedText.trim();
+      // If no match found, return the next 14 characters after CUSTOMER REF2
+      return cleanedText.substring(0, 14).trim();
     }
   }
 
