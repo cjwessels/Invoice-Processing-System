@@ -53,8 +53,9 @@ const extractSupplierName = (text, fileName) => {
   }
   
   // Check for Wispernet Melkhoutfontein
-  if (text.includes('Theewaterskloof')) {
-    return 'Theewaterskloof Municipality';
+  if (text.includes('Theewaterskloof') && &&
+    text.toLowerCase().includes('Melkhoutfontein')) {
+    return 'Wispernet Melkhoutfontein';
   }
 
   // Check for common supplier patterns in text
