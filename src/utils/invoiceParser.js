@@ -8,7 +8,7 @@ export const extractInvoiceData = (text, fileName) => {
   const supplierName = extractSupplierName(cleanText, fileName);
 
   // Extract invoice number
-  const invoiceNumber = extractInvoiceNumber(cleanText);
+  const invoiceNumber = extractInvoiceNumber(cleanText, supplierName);
 
   // Extract dates
   const invoiceDate = extractInvoiceDate(cleanText, supplierName);
@@ -73,7 +73,16 @@ const extractSupplierName = (text, fileName) => {
 };
 
 // Extract invoice number
-const extractInvoiceNumber = (text) => {
+const extractInvoiceNumber = (text, supplierName) => {
+  // Special handling for Mustek invoices
+  if (supplierName === 'Mustek Limited') {
+    const mustekInvoicePattern = /\bINV-\d{7} [A-Za-z0-9]{2}\b/;
+    const match = text.match(mustekInvoicePattern);
+    if (match) {
+      return match[0];
+    }
+  }
+
   // Common patterns for invoice numbers
   const invoiceNumberPatterns = [
     /Invoice\s*(?:Number|No|#|:|Number:)\s*([A-Z0-9-]+)/i,
