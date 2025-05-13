@@ -50,7 +50,7 @@ const extractSupplierName = (text, fileName) => {
   // Check for Theewaterskloof
   if (text.includes('Theewaterskloof')) {
     return 'Theewaterskloof Municipality';
-  }
+  };
   
   // Check for Wispernet Melkhoutfontein
   if (text.includes('Theewaterskloof') && &&
