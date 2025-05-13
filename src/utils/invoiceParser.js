@@ -11,14 +11,14 @@ export const extractInvoiceData = (text, fileName) => {
   const invoiceNumber = extractInvoiceNumber(cleanText);
 
   // Extract dates
-  const invoiceDate = extractInvoiceDate(cleanText);
+  const invoiceDate = extractInvoiceDate(cleanText, supplierName);
   const dueDate = extractDueDate(cleanText);
 
   // Extract totals
   const { subtotal, tax, total } = extractTotals(cleanText);
 
   // Extract line items - this is the critical function
-  const lineItems = extractLineItems(cleanText);
+  const lineItems = extractLineItems(cleanText, supplierName);
 
   return {
     supplierName,
@@ -65,10 +65,8 @@ const extractSupplierName = (text, fileName) => {
   }
 
   // If no match from text, try to extract from filename
-  if (fileName) {
-    // Extract potential supplier name from filename
-    // This is a fallback and less reliable
-    return 'Unknown Supplier';
+  if (fileName && fileName.includes('Mustek')) {
+    return 'Mustek Limited';
   }
 
   return 'Unknown Supplier';
@@ -97,16 +95,18 @@ const extractInvoiceNumber = (text) => {
 };
 
 // Extract invoice date
-const extractInvoiceDate = (text) => {
+const extractInvoiceDate = (text, supplierName) => {
+  // Special handling for Mustek invoices
+  if (supplierName === 'Mustek Limited') {
+    const mustekDatePattern = /(\d{2}\/\d{2}\/\d{4})/i;
+    const match = text.match(mustekDatePattern);
+    if (match && match[1]) {
+      return match[1];
+    }
+  }
+
   // Common patterns for invoice dates
-
-  // Nashua Cape Town:
-
-  const nashuaInvoiceDatePatterns = [/s*(\d{4}\/\d{2}\/\d{2})/i];
-
-  //^\d{4}/\d{2}/\d{2}$
   const invoiceDatePatterns = [
-    // /s*(\d{4}\/\d{2}\/\d{2})/i,
     /Invoice Date:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
     /Invoice Date:?\s*(\d{1,2}\s+[A-Za-z]+\s+\d{2,4})/i,
     /Invoice Date?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
@@ -119,21 +119,9 @@ const extractInvoiceDate = (text) => {
     /Date\s+(\d{2}\/\d{2}\/\d{4})/i,
   ];
 
-  let useDatePattern = [];
-
-  console.log('text:', text);
-
-  if (text.includes('Bridoon Trade and Invest 197')) {
-    // NASHUA invoice date check
-    useDatePattern = nashuaInvoiceDatePatterns;
-  } else {
-    useDatePattern = invoiceDatePatterns;
-  }
-
-  for (const pattern of useDatePattern) {
+  for (const pattern of invoiceDatePatterns) {
     const match = text.match(pattern);
     if (match && match[1]) {
-      // return parseDate(match[1]);
       return match[1];
     }
   }
@@ -225,33 +213,15 @@ const extractTotals = (text) => {
 };
 
 // Extract line items
-const extractLineItems = (text) => {
+const extractLineItems = (text, supplierName) => {
   const lineItems = [];
 
-  // Different suppliers have different formats, so we need multiple approaches
-
-  // Approach 1: Look for tabular data with item code, description, quantity, price
-  const tableLineRegex =
-    /\b([A-Z0-9-]+)\s+([A-Za-z0-9 .,\/-]+)\s+(\d+(?:\.\d+)?)\s+(?:R|ZAR)?\s*(\d+(?:,\d+)?(?:\.\d+)?)\s+(?:R|ZAR)?\s*(\d+(?:,\d+)?(?:\.\d+)?)/g;
-  let match;
-  while (
-    (match = tableLineRegex.exec(text)) !== null &&
-    !text.includes('Bridoon Trade and Invest 197')
-  ) {
-    lineItems.push({
-      itemCode: match[1].trim(),
-      description: match[2].trim(),
-      quantity: match[3].trim(),
-      unitPrice: match[4].trim().replace(/,/g, ''),
-      amount: match[5].trim().replace(/,/g, ''),
-    });
-  }
-
-  // Approach 2: Look for Mustek-style line items
-  if (lineItems.length === 0 && text.includes('Mustek')) {
-    const muskekItemRegex =
-      /([A-Z0-9-]+)\s+([A-Za-z0-9 .,\/-]+)\s+(\d+(?:\.\d+)?)\s+(\d+(?:,\d+)?(?:\.\d+)?)\s+(\d+(?:,\d+)?(?:\.\d+)?)\s+(\d+(?:,\d+)?(?:\.\d+)?)\s+(\d+(?:,\d+)?(?:\.\d+)?)/g;
-    while ((match = muskekItemRegex.exec(text)) !== null) {
+  // Special handling for Mustek invoices
+  if (supplierName === 'Mustek Limited') {
+    const mustekItemRegex = /([A-Z0-9-]+)\s+([A-Za-z0-9 .,\/-]+)\s+(\d+(?:\.\d+)?)\s+(\d+(?:,\d+)?(?:\.\d+)?)\s+(\d+(?:,\d+)?(?:\.\d+)?)\s+(\d+(?:,\d+)?(?:\.\d+)?)\s+(\d+(?:,\d+)?(?:\.\d+)?)/g;
+    
+    let match;
+    while ((match = mustekItemRegex.exec(text)) !== null) {
       lineItems.push({
         itemCode: match[1].trim(),
         description: match[2].trim(),
@@ -262,150 +232,33 @@ const extractLineItems = (text) => {
         total: match[7].trim().replace(/,/g, ''),
       });
     }
-  }
-
-  // Approach 3: Look for ICDL style items
-  if (lineItems.length === 0 && text.includes('ICDL')) {
-    const icdlItemRegex =
-      /([A-Z0-9-]+)\s+([A-Za-z0-9 .,\/-]+)\s+(\d+(?:\.\d+)?(?:\s+Unit)?)\s+(\d+(?:,\d+)?(?:\.\d+)?)\s+(?:\d+(?:\.\d+)?)?\s+(\d+(?:,\d+)?(?:\.\d+)?)/g;
-    while ((match = icdlItemRegex.exec(text)) !== null) {
-      lineItems.push({
-        itemCode: match[1].trim(),
-        description: match[2].trim(),
-        quantity: match[3].trim().replace(/Unit/i, '').trim(),
-        unitPrice: match[4].trim().replace(/,/g, ''),
-        amount: match[5].trim().replace(/,/g, ''),
-      });
-    }
-  }
-
-  // Approach 4: Look for NASHUA style items
-  function extractNashuaLineItems(text) {
-    const lineItems = [];
-
-    // First, find the section that contains the tabular data
-    // Look for the section between the headers and the totals
-    const tableSection = text.match(
-      /Description\s+Qty\s+Unit\s+Price\s+Price\s+VAT\s+Total([\s\S]*?)Total \(excl VAT\)/
-    );
-
-    if (tableSection && tableSection[1]) {
-      const tableContent = tableSection[1].trim();
-      console.log('Table Content:', tableContent);
-
-      // Pattern to match line items in the format: Description Qty Unit Price Price VAT Total
-      const lineItemRegex =
-        /([^\n]+?)\s+(\d+(?:\.\d+)?)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)/g;
-
-      let match;
-      while ((match = lineItemRegex.exec(tableContent)) !== null) {
-        lineItems.push({
-          description: match[1].trim(),
-          quantity: match[2].trim(),
-          unitPrice: match[3].trim(),
-          price: match[4].trim(),
-          vat: match[5].trim(),
-          total: match[6].trim(),
-        });
-      }
-    }
-
+    
     return lineItems;
   }
 
-  // For specific NASHUA invoice format (Bridoon Trade and Invest 197)
-  if (text.includes('Bridoon Trade and Invest 197')) {
-    const nashuaLineItems = extractNashuaLineItems(text);
-    if (nashuaLineItems.length > 0) {
-      lineItems.push(...nashuaLineItems);
-    } else {
-      // Fallback for the specific structure in this invoice
-      // The format appears to be different from standard tabular format
-      const specialFormatRegex =
-        /\* ([^*]+) \*\s+(?:Captured[^\n]+\s+)?Start\s*:\s*(\d+)\s+End\s*:\s*(\d+)\s+(?:Copies Made at Tier (?:\d+)\s+)?(?:[^\n]+\s+)*?(\d+)\s+([\d.]+)\s+([\d.]+)/g;
-
-      let match;
-      while ((match = specialFormatRegex.exec(text)) !== null) {
-        console.log(match);
-        const meterType = match[1].trim();
-        const startReading = match[2].trim();
-        const endReading = match[3].trim();
-        const quantity = match[5].trim();
-        const unitPrice = match[6].trim();
-        const price = match[6].trim();
-
-        lineItems.push({
-          description: `${meterType} Meter (${startReading}-${endReading})`,
-          quantity: quantity,
-          unitPrice: unitPrice,
-          price: price,
-        });
-      }
-
-      // Look for minimum charge entries
-      const minChargeRegex = /Min\.Copy\s+Chg(?:\s+Shortfall)?\s+([\d.]+)/g;
-      while ((match = minChargeRegex.exec(text)) !== null) {
-        lineItems.push({
-          description: 'Minimum Copy Charge',
-          quantity: '1',
-          unitPrice: match[1].trim(),
-          price: match[1].trim(),
-        });
-      }
-    }
+  // Approach 1: Look for tabular data with item code, description, quantity, price
+  const tableLineRegex = /\b([A-Z0-9-]+)\s+([A-Za-z0-9 .,\/-]+)\s+(\d+(?:\.\d+)?)\s+(?:R|ZAR)?\s*(\d+(?:,\d+)?(?:\.\d+)?)\s+(?:R|ZAR)?\s*(\d+(?:,\d+)?(?:\.\d+)?)/g;
+  
+  let match;
+  while ((match = tableLineRegex.exec(text)) !== null) {
+    lineItems.push({
+      itemCode: match[1].trim(),
+      description: match[2].trim(),
+      quantity: match[3].trim(),
+      unitPrice: match[4].trim().replace(/,/g, ''),
+      amount: match[5].trim().replace(/,/g, ''),
+    });
   }
 
-  // Approach 4: For internet service providers (Herotel, Wispernet, etc.)
-  if (
-    lineItems.length === 0 &&
-    (text.includes('Herotel') ||
-      text.includes('Wispernet') ||
-      text.includes('Internet'))
-  ) {
-    const internetItemRegex =
-      /(Hero Wireless|Premium Uncapped Internet|Internet Service)\s*-\s*([A-Za-z0-9 .,\/-]+)\s+(\d+(?:\.\d+)?)\s+(?:R|ZAR)?\s*(\d+(?:,\d+)?(?:\.\d+)?)\s+(?:\d+(?:\.\d+)%)?\s+(?:R|ZAR)?\s*(\d+(?:,\d+)?(?:\.\d+)?)/g;
-    while ((match = internetItemRegex.exec(text)) !== null) {
-      lineItems.push({
-        serviceType: match[1].trim(),
-        description: match[2].trim(),
-        quantity: match[3].trim(),
-        unitPrice: match[4].trim().replace(/,/g, ''),
-        total: match[5].trim().replace(/,/g, ''),
-      });
-    }
-  }
-
-  // Approach 5: For municipal accounts with service items
-  if (
-    lineItems.length === 0 &&
-    (text.includes('Municipality') || text.includes('Munisipaliteit'))
-  ) {
-    const municipalItemRegex =
-      /(Electricity|Water|Rates|Refuse|Sewerage|Sanitation|Rent)\s+(?:[A-Za-z0-9 .,\/-]+)?\s+(?:R|ZAR)?\s*(\d+(?:,\d+)?(?:\.\d+)?)\s+(?:R|ZAR)?\s*(\d+(?:,\d+)?(?:\.\d+)?)\s+(?:R|ZAR)?\s*(\d+(?:,\d+)?(?:\.\d+)?)/g;
-    while ((match = municipalItemRegex.exec(text)) !== null) {
-      lineItems.push({
-        serviceType: match[1].trim(),
-        consumption: '',
-        basicCharge: match[2] ? match[2].trim().replace(/,/g, '') : '',
-        vat: match[3] ? match[3].trim().replace(/,/g, '') : '',
-        total: match[4] ? match[4].trim().replace(/,/g, '') : '',
-      });
-    }
-  }
-
-  // If still no line items detected, try a more generic approach
+  // If no line items detected, try a more generic approach
   if (lineItems.length === 0) {
     // Look for patterns that might indicate a line item in almost any format
-    const genericItemRegex =
-      /([A-Za-z0-9 .,\/-]+)\s+(\d+(?:\.\d+)?)\s+(?:R|ZAR)?\s*(\d+(?:,\d+)?(?:\.\d+)?)\s+(?:R|ZAR)?\s*(\d+(?:,\d+)?(?:\.\d+)?)/g;
+    const genericItemRegex = /([A-Za-z0-9 .,\/-]+)\s+(\d+(?:\.\d+)?)\s+(?:R|ZAR)?\s*(\d+(?:,\d+)?(?:\.\d+)?)\s+(?:R|ZAR)?\s*(\d+(?:,\d+)?(?:\.\d+)?)/g;
 
     while ((match = genericItemRegex.exec(text)) !== null) {
       // Verify this is likely a line item and not some other numeric data
       const description = match[1].trim();
-      if (
-        description.length > 3 &&
-        !description.match(/total|subtotal|tax|vat|date|invoice/i)
-      ) {
+      if (description.length > 3 && !description.match(/total|subtotal|tax|vat|date|invoice/i)) {
         lineItems.push({
           description: description,
           quantity: match[2].trim(),
