@@ -47,7 +47,12 @@ const extractSupplierName = (text, fileName) => {
     return 'Mustek Limited';
   }
 
-  // Check for Mustek Limited
+  // Check for Theewaterskloof
+  if (text.includes('Theewaterskloof')) {
+    return 'Theewaterskloof Municipality';
+  }
+  
+  // Check for Wispernet Melkhoutfontein
   if (text.includes('Theewaterskloof')) {
     return 'Theewaterskloof Municipality';
   }
