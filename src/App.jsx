@@ -16,6 +16,7 @@ function App() {
   const [files, setFiles] = useState([]);
   const [processedData, setProcessedData] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isMoving, setIsMoving] = useState(false);
   const [error, setError] = useState(null);
 
   const columns = [
@@ -64,32 +65,66 @@ function App() {
     setProcessedData(updatedData);
   };
 
-  // Format date from DD/MM/YYYY to DD_MM_YYYY
+  // Format date from YYYY-MM-DD to YYYYMMDD for file naming
   const formatDateForFileName = (dateString) => {
     if (!dateString || dateString === 'Unknown') return 'unknown_date';
-    return dateString.replace(/\//g, '_');
+    return dateString.replace(/-/g, '');
   };
 
   const handleRenameAndMove = async () => {
     try {
+      setIsMoving(true);
+      setError(null);
+
       const processedPath = import.meta.env.VITE_PROCESSED_FILES_PATH;
       if (!processedPath) {
         throw new Error('Processed files path not configured');
       }
 
-      // In a real implementation, you would handle the file operations here
-      console.log('Files would be renamed and moved to:', processedPath);
-      
-      // Log the renamed files with the new format
-      processedData.forEach(item => {
+      // Create an array of file operations
+      const operations = processedData.map(item => {
+        const originalFile = files.find(f => f.name === item.fileName);
+        if (!originalFile) {
+          throw new Error(`Original file not found for ${item.fileName}`);
+        }
+
         const formattedDate = formatDateForFileName(item.invoiceDate);
-        const newFileName = `${item.supplierName}-${item.supplierCode}-${formattedDate}-${item.invoiceNumber}.pdf`;
-        console.log(`Renaming ${item.fileName} to ${newFileName}`);
+        const newFileName = `${item.supplierName}-${item.supplierCode}-${formattedDate}-${item.invoiceNumber}.pdf`
+          .replace(/[<>:"/\\|?*]/g, '_') // Replace invalid characters
+          .replace(/\s+/g, '_'); // Replace spaces with underscores
+
+        return {
+          file: originalFile,
+          newName: newFileName,
+        };
       });
 
-      setError(null);
+      // Process each operation
+      for (const op of operations) {
+        const response = await fetch('/api/move-file', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            sourcePath: op.file.path,
+            targetPath: `${processedPath}/${op.newName}`,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to move file ${op.file.name}`);
+        }
+      }
+
+      // Clear the files and processed data after successful move
+      setFiles([]);
+      setProcessedData([]);
+      
     } catch (err) {
-      setError('Error renaming files: ' + (err.message || 'Unknown error'));
+      setError('Error moving files: ' + (err.message || 'Unknown error'));
+    } finally {
+      setIsMoving(false);
     }
   };
 
@@ -126,9 +161,9 @@ function App() {
             variant="contained"
             color="success"
             onClick={handleRenameAndMove}
-            disabled={processedData.length === 0}
+            disabled={isMoving || processedData.length === 0}
           >
-            Rename and Move Files
+            {isMoving ? <CircularProgress size={24} /> : 'Rename and Move Files'}
           </Button>
         </Box>
       </Paper>
