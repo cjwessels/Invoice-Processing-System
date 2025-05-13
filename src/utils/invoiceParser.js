@@ -51,7 +51,7 @@ const extractSupplierName = (text, fileName) => {
 // Extract invoice number
 const extractInvoiceNumber = (text) => {
   // Check for Matzikama specific invoice number pattern
-  const matzikamaBelastingPattern = /BELSATING FAKTUUR NR\.\s*(\d+)/i;
+  const matzikamaBelastingPattern = /BELASTING FAKTUUR NR\.\s*(\S+)/i;
   const matzikamaBelastingMatch = text.match(matzikamaBelastingPattern);
   if (matzikamaBelastingMatch && matzikamaBelastingMatch[1]) {
     return matzikamaBelastingMatch[1].trim();
