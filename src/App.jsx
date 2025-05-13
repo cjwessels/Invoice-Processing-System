@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Container,
@@ -18,6 +18,30 @@ function App() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isMoving, setIsMoving] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Create uploads directory if it doesn't exist
+    const createUploadsDir = async () => {
+      try {
+        const response = await fetch('/api/create-directory', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            path: import.meta.env.VITE_SOURCE_FILES_PATH
+          }),
+        });
+        if (!response.ok) {
+          console.error('Failed to create uploads directory');
+        }
+      } catch (err) {
+        console.error('Error creating uploads directory:', err);
+      }
+    };
+
+    createUploadsDir();
+  }, []);
 
   const columns = [
     { field: 'fileName', headerName: 'File Name', flex: 1, editable: true },
@@ -75,9 +99,11 @@ function App() {
       setIsMoving(true);
       setError(null);
 
+      const sourcePath = import.meta.env.VITE_SOURCE_FILES_PATH;
       const processedPath = import.meta.env.VITE_PROCESSED_FILES_PATH;
-      if (!processedPath) {
-        throw new Error('Processed files path not configured');
+      
+      if (!sourcePath || !processedPath) {
+        throw new Error('Source or processed files path not configured');
       }
 
       const operations = processedData.map(item => {
@@ -104,7 +130,7 @@ function App() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            sourcePath: `./${op.file.name}`,
+            sourcePath: `${sourcePath}/${op.file.name}`,
             targetPath: `${processedPath}/${op.newName}`,
           }),
         });

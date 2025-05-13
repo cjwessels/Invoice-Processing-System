@@ -8,6 +8,36 @@ function fileOperationsMiddleware() {
   return {
     name: 'file-operations',
     configureServer(server) {
+      // Create directory endpoint
+      server.middlewares.use('/api/create-directory', async (req, res) => {
+        if (req.method === 'POST') {
+          try {
+            const chunks = [];
+            req.on('data', chunk => chunks.push(chunk));
+            req.on('end', async () => {
+              const { path: dirPath } = JSON.parse(Buffer.concat(chunks).toString());
+              
+              try {
+                await fs.mkdir(dirPath, { recursive: true });
+                res.statusCode = 200;
+                res.end(JSON.stringify({ success: true }));
+              } catch (error) {
+                console.error('Error creating directory:', error);
+                res.statusCode = 500;
+                res.end(JSON.stringify({ error: error.message }));
+              }
+            });
+          } catch (error) {
+            res.statusCode = 500;
+            res.end(JSON.stringify({ error: error.message }));
+          }
+        } else {
+          res.statusCode = 405;
+          res.end(JSON.stringify({ error: 'Method not allowed' }));
+        }
+      });
+
+      // Move file endpoint
       server.middlewares.use('/api/move-file', async (req, res) => {
         if (req.method === 'POST') {
           try {
@@ -24,7 +54,7 @@ function fileOperationsMiddleware() {
               }
 
               try {
-                // Check if source file exists before attempting to move
+                // Check if source file exists
                 try {
                   await fs.access(sourcePath);
                 } catch (error) {
