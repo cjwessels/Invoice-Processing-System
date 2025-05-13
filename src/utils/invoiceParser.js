@@ -38,8 +38,8 @@ const extractInvoiceNumber = (text, supplierName) => {
         return match[0];
       }
       
-      // If no match found, return the next 14 characters after CUSTOMER REF2
-      return cleanedText.substring(0, 14).trim();
+      // If no match found, return the next 15 characters after CUSTOMER REF2
+      return cleanedText.substring(0, 15).trim();
     }
   }
 
