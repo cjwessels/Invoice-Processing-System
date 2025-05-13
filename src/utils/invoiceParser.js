@@ -12,12 +12,23 @@ export const extractInvoiceData = (text, fileName) => {
 
   // Extract dates
   const invoiceDate = extractInvoiceDate(cleanText);
+  const dueDate = extractDueDate(cleanText);
+
+  // Extract totals
+  const { subtotal, tax, total } = extractTotals(cleanText);
+
+  // Extract line items
+  const lineItems = extractLineItems(cleanText, supplierName);
 
   return {
     supplierName,
     invoiceNumber,
     invoiceDate,
-    dueDate: 'Unknown',
+    dueDate,
+    subtotal,
+    tax,
+    total,
+    lineItems,
   };
 };
 
@@ -28,20 +39,22 @@ const extractSupplierName = (text, fileName) => {
     return 'Matzikama Municipality - Vredendal';
   }
 
+  // Check for Mustek Limited
+  if (text.includes('Mustek Limited')) {
+    return 'Mustek Limited';
+  }
+
   // Check for common supplier patterns in text
   const supplierPatterns = [
     { regex: /MATZIKAMA MUNISIPALITEIT/i, name: 'Matzikama Municipality - Vredendal' },
     { regex: /MATZIKAMA MUNICIPALITY/i, name: 'Matzikama Municipality - Vredendal' },
-    // ... other patterns ...
+    { regex: /Mustek Limited/i, name: 'Mustek Limited' },
+    // Add other patterns as needed
   ];
 
   for (const pattern of supplierPatterns) {
     if (pattern.regex.test(text)) {
-      // If we find Matzikama Municipality and Vredendal, return the Vredendal-specific name
-      if ((pattern.regex.test(text) && text.toLowerCase().includes('vredendal')) || 
-          text.includes('headoff@matzikama.gov.za')) {
-        return 'Matzikama Municipality - Vredendal';
-      }
+      return pattern.name;
     }
   }
 
@@ -55,6 +68,13 @@ const extractInvoiceNumber = (text) => {
   const matzikamaBelastingMatch = text.match(matzikamaBelastingPattern);
   if (matzikamaBelastingMatch && matzikamaBelastingMatch[1]) {
     return matzikamaBelastingMatch[1].trim();
+  }
+
+  // Check for Mustek invoice number pattern
+  const mustekPattern = /Invoice No\s*:\s*([A-Z0-9-]+)/i;
+  const mustekMatch = text.match(mustekPattern);
+  if (mustekMatch && mustekMatch[1]) {
+    return mustekMatch[1].trim();
   }
 
   // Common patterns for invoice numbers as fallback
@@ -81,8 +101,14 @@ const extractInvoiceDate = (text) => {
   // First try to find the exact date format for Matzikama invoices (DD/MM/YYYY)
   const matzikamaDates = text.match(/\b(\d{2}\/\d{2}\/\d{4})\b/g);
   if (matzikamaDates && matzikamaDates.length > 0) {
-    // Return the first date found in DD/MM/YYYY format
     return matzikamaDates[0];
+  }
+
+  // Check for Mustek date format
+  const mustekDatePattern = /Invoice Date\s*:\s*(\d{2}\/\d{2}\/\d{4})/i;
+  const mustekMatch = text.match(mustekDatePattern);
+  if (mustekMatch && mustekMatch[1]) {
+    return mustekMatch[1];
   }
 
   // Common patterns for other date formats as fallback
@@ -100,4 +126,125 @@ const extractInvoiceDate = (text) => {
   }
 
   return 'Unknown';
+};
+
+// Extract due date
+const extractDueDate = (text) => {
+  // Common patterns for due dates
+  const dueDatePatterns = [
+    /Due Date:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
+    /Payment Due:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
+    /Pay By:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
+  ];
+
+  for (const pattern of dueDatePatterns) {
+    const match = text.match(pattern);
+    if (match && match[1]) {
+      return match[1];
+    }
+  }
+
+  return 'Unknown';
+};
+
+// Extract total amounts
+const extractTotals = (text) => {
+  let subtotal = 'Unknown';
+  let tax = 'Unknown';
+  let total = 'Unknown';
+
+  // Mustek specific patterns
+  if (text.includes('Mustek Limited')) {
+    const subtotalPattern = /Sub\s*Total\s*:\s*R\s*([\d,]+\.\d{2})/i;
+    const vatPattern = /VAT\s*:\s*R\s*([\d,]+\.\d{2})/i;
+    const totalPattern = /Total\s*:\s*R\s*([\d,]+\.\d{2})/i;
+
+    const subtotalMatch = text.match(subtotalPattern);
+    const vatMatch = text.match(vatPattern);
+    const totalMatch = text.match(totalPattern);
+
+    if (subtotalMatch) subtotal = subtotalMatch[1].replace(/,/g, '');
+    if (vatMatch) tax = vatMatch[1].replace(/,/g, '');
+    if (totalMatch) total = totalMatch[1].replace(/,/g, '');
+
+    return { subtotal, tax, total };
+  }
+
+  // Generic patterns for other invoices
+  const subtotalPatterns = [
+    /Sub[ -]?total:?\s*(?:R|ZAR)?\s*([0-9,.]+)/i,
+    /Amount Excl Tax:?\s*(?:R|ZAR)?\s*([0-9,.]+)/i,
+  ];
+
+  const taxPatterns = [
+    /VAT:?\s*(?:R|ZAR)?\s*([0-9,.]+)/i,
+    /Tax:?\s*(?:R|ZAR)?\s*([0-9,.]+)/i,
+  ];
+
+  const totalPatterns = [
+    /Total:?\s*(?:R|ZAR)?\s*([0-9,.]+)/i,
+    /Amount Due:?\s*(?:R|ZAR)?\s*([0-9,.]+)/i,
+  ];
+
+  for (const pattern of subtotalPatterns) {
+    const match = text.match(pattern);
+    if (match && match[1]) {
+      subtotal = match[1].trim().replace(/,/g, '');
+      break;
+    }
+  }
+
+  for (const pattern of taxPatterns) {
+    const match = text.match(pattern);
+    if (match && match[1]) {
+      tax = match[1].trim().replace(/,/g, '');
+      break;
+    }
+  }
+
+  for (const pattern of totalPatterns) {
+    const match = text.match(pattern);
+    if (match && match[1]) {
+      total = match[1].trim().replace(/,/g, '');
+      break;
+    }
+  }
+
+  return { subtotal, tax, total };
+};
+
+// Extract line items
+const extractLineItems = (text, supplierName) => {
+  const lineItems = [];
+
+  // Special handling for Mustek invoices
+  if (supplierName === 'Mustek Limited') {
+    const mustekItemPattern = /(\d+)\s+([A-Z0-9-]+)\s+([^]+?)\s+(\d+)\s+R\s*([\d,]+\.\d{2})\s+R\s*([\d,]+\.\d{2})\s+R\s*([\d,]+\.\d{2})\s+R\s*([\d,]+\.\d{2})/g;
+    let match;
+
+    while ((match = mustekItemPattern.exec(text)) !== null) {
+      lineItems.push({
+        itemNumber: match[1].trim(),
+        itemCode: match[2].trim(),
+        description: match[3].trim(),
+        quantity: match[4].trim(),
+        unitPrice: match[5].trim().replace(/,/g, ''),
+        netPrice: match[6].trim().replace(/,/g, ''),
+        vat: match[7].trim().replace(/,/g, ''),
+        total: match[8].trim().replace(/,/g, ''),
+      });
+    }
+
+    return lineItems;
+  }
+
+  // Handle other invoice types
+  // ... (rest of the existing line item extraction code)
+
+  return lineItems;
+};
+
+export const formatDateForFileName = (dateString) => {
+  if (!dateString || dateString === 'Unknown') return 'unknown_date';
+  return dateString.replace(/\//g, '_');
 };
