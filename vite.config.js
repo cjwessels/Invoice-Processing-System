@@ -44,7 +44,7 @@ function fileOperationsMiddleware() {
               } catch (error) {
                 console.error('Error moving file:', error);
                 res.statusCode = 500;
-                res.end(JSON.stringify({ error: error.message }));
+                res.end(JSON.stringify({ error: `Error moving file: ${error.message}` }));
               }
             });
           } catch (error) {

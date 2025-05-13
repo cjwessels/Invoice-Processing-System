@@ -104,7 +104,7 @@ function App() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            sourcePath: op.file.path || `./${op.file.name}`, // Fallback to file name if path is not available
+            sourcePath: `./${op.file.name}`,
             targetPath: `${processedPath}/${op.newName}`,
           }),
         });
