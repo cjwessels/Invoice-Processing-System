@@ -57,6 +57,11 @@ const extractSupplierName = (text, fileName) => {
     text.toLowerCase().includes('Melkhoutfontein')
      ) {
     return 'Wispernet Melkhoutfontein';
+  };
+  // Check for Nashua Cape Town
+  if (text.includes('Bridoon Trade and Invest 197')
+     ) {
+    return 'Nashua Cape Town';
   }
 
   // Check for common supplier patterns in text
