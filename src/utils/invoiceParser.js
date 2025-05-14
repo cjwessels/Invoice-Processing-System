@@ -122,7 +122,7 @@ const extractInvoiceNumber = (text, supplierName) => {
 
   // For Nashua Cape Town invoices, get 10 characters after 020866 DIR
   if (supplierName === 'Nashua Cape Town') {
-    const customerRef2Pattern = /020866 DIR\s*(.{10})/i;
+    const customerRef2Pattern = /020866 DIR\s*(.{6})/i;
     const customerRef2Match = text.match(customerRef2Pattern);
     if (customerRef2Match && customerRef2Match[1]) {
       return customerRef2Match[1].trim();
