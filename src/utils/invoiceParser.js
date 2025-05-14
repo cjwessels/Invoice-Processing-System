@@ -80,6 +80,7 @@ const extractSupplierName = (text, fileName) => {
       name: 'Theewaterskloof Municipality',
     },
     { regex: /97102211/i, name: 'Wispernet Melkhoutfontein' },
+    { regex: /Nashua Cape Town/i, name: 'Nashua Cape Town' },
     // Add other patterns as needed
   ];
 
