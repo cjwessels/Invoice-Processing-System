@@ -134,7 +134,6 @@ const extractInvoiceNumber = (text, supplierName) => {
   console.log(text)
   // Common patterns for invoice numbers as fallback
   const invoiceNumberPatterns = [
-     // /Tax Invoice\s*(\d{1,2}\/\d{1,2}\/\d{2})\s*([A-Z0-9-]+)/i,
     /(?:Invoice|Document)\s*(?:Number|No|No.|#|:|Number:)\s*([A-Z0-9-]+)/i,
     /Inv\s*(?:No.)\s*([A-Z0-9-]+)/i,
     /Invoice\s*(?::|#)\s*([A-Z0-9-]+)/i,
