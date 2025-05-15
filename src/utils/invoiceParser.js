@@ -81,6 +81,7 @@ const extractSupplierName = (text, fileName) => {
     },
     { regex: /97102211/i, name: 'Wispernet Melkhoutfontein' },
     { regex: /Nashua Cape Town/i, name: 'Nashua Cape Town' },
+    { regex: /TRUSC/, name: 'Trusc Pty ltd' }
     // Add other patterns as needed
   ];
 
