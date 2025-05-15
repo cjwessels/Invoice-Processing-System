@@ -173,7 +173,7 @@ const extractInvoiceDate = (text) => {
     console.log(match[1])
     const formatedDate = new Date(match[1])
     if (match && match[1]) {
-      return formatedDate
+      return formatedDate.toISOString().split('T')[0]
       // return match[1];
     }
   }
