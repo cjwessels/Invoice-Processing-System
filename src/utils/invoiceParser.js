@@ -83,8 +83,7 @@ const extractSupplierName = (text, fileName) => {
   for (const supplier of supplierCodes) {
     const regex = new RegExp(supplier.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
     // console.log(regex)
-    console.log(text.includes('Matzikama') ? checkMatzikama() : 
-       'no')
+   
     if (regex.test(text)) {
       
       text.includes('Matzikama') ? checkMatzikama : 
