@@ -86,7 +86,7 @@ const extractSupplierName = (text, fileName) => {
    
     if (regex.test(text)) {
       
-      // text.includes('Matzikama') ? checkMatzikama : 
+      
        return supplier.name;
     }
   }
