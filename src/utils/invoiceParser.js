@@ -171,8 +171,9 @@ const extractInvoiceDate = (text) => {
   for (const pattern of datePatterns) {
     const match = text.match(pattern);
     console.log(match[1])
-    const formatedDate = new Date(match[1])
+    
     if (match && match[1]) {
+      const formatedDate = new Date(match[1])
       return formatedDate.toISOString().split('T')[0]
       // return match[1];
     }
