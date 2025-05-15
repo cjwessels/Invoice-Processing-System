@@ -114,15 +114,24 @@ const extractInvoiceNumber = (text, supplierName) => {
       return customerRef2Match[1].trim();
     }
   }
+  // For Nashua Cape Town invoices
+  if (supplierName === 'Nashua Cape Town') {
+    const customerRef2Pattern = /020866 DIR\s*(.{6})/i;
+    const customerRef2Match = text.match(customerRef2Pattern);
+    if (customerRef2Match && customerRef2Match[1]) {
+      return customerRef2Match[1].trim();
+    }
+  }
 
   // Common patterns for invoice numbers as fallback
   const invoiceNumberPatterns = [
+    /Document No\s*([A-Z0-9-]+)/i,
     /Invoice\s*(?:Number|No|#|:|Number:)\s*([A-Z0-9-]+)/i,
     /Inv\s*(?:No.)\s*([A-Z0-9-]+)/i,
     /Invoice\s*(?::|#)\s*([A-Z0-9-]+)/i,
     /INV(?:OICE)?\s*(?::|#|No|Number)?\s*([A-Z0-9-]+)/i,
     /Tax Invoice No[.:]\s*([A-Z0-9-]+)/i,
-    /Document No\s*([A-Z0-9-]+)/i,
+    
   ];
 
   for (const pattern of invoiceNumberPatterns) {
