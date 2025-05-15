@@ -1,5 +1,5 @@
 import pdfjs from '../utils/pdfWorker';
-import { extractInvoiceData } from '../utils/invoiceParser';
+import { extractInvoiceData, extractInvoiceNumber } from '../utils/invoiceParser';
 import { matchSupplier } from '../utils/supplierMatcher';
 
 export const processPDF = async (file) => {
