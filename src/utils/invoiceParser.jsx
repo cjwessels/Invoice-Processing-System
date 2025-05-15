@@ -75,7 +75,7 @@ const extractSupplierName = (text, fileName) => {
   const checkMatzikama = () => {
     const regions = ['Bitterfontein', 'Klawer' ,'RIETPOORT' ,'Vanrhynsdorp' ,'Vredendal','Doringbaai']
    for (const region of regions) {
-    return text.includes(region) ? `Matzikama Municipality  - ${region}` : 'Matzikama Municipality'
+     text.includes(region) ? `Matzikama Municipality  - ${region}` : 'Matzikama Municipality'
    }
   }
 
