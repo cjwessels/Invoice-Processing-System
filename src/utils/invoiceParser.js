@@ -169,8 +169,8 @@ const extractInvoiceDate = (text) => {
 
   // Common patterns for other date formats as fallback
   const datePatterns = [
-    /Invoice Date:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
     /Date:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
+    /Invoice Date:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,    
     /DATE OF ACCOUNT:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
     /\b(\d{2}\/\d{2}\/\d{4})\b/g,
     /\b(\d{4}\/\d{2}\/\d{2})\b/g,
