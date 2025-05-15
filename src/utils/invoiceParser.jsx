@@ -102,3 +102,22 @@ const extractSupplierName = (text, fileName) => {
 
   return 'Unknown Supplier';
 };
+
+// Extract invoice number based on supplier-specific patterns
+export const extractInvoiceNumber = (text, supplierName) => {
+  // Default pattern for invoice numbers
+  const defaultPattern = /(?:Invoice|INV|Reference)[\s#:]*([A-Z0-9-]+)/i;
+  
+  // Supplier-specific patterns
+  const patterns = {
+    'Mustek Limited': /Invoice Number:?\s*([A-Z0-9-]+)/i,
+    'Theewaterskloof Municipality': /Account Number:?\s*([0-9]+)/i,
+    'Nashua Cape Town': /Invoice No:?\s*([A-Z0-9-]+)/i
+  };
+
+  // Use supplier-specific pattern if available, otherwise use default
+  const pattern = patterns[supplierName] || defaultPattern;
+  const match = text.match(pattern);
+
+  return match ? match[1] : 'Unknown';
+};
