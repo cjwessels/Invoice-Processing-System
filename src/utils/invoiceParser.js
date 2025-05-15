@@ -13,7 +13,7 @@ export const extractInvoiceData = (text, fileName) => {
 
   // Extract dates
   // const invoiceDate = new Date(extractInvoiceDate(cleanText)).toISOString().split('T')[0];
-  const invoiceDate = (extractInvoiceDate(cleanText);
+  const invoiceDate = extractInvoiceDate(cleanText);
   const dueDate = extractDueDate(cleanText);
 
   // Extract totals
