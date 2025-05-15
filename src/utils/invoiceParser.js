@@ -82,6 +82,7 @@ const extractSupplierName = (text, fileName) => {
   // Check for patterns in supplierCodes
   for (const supplier of supplierCodes) {
     const regex = new RegExp(supplier.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    console.log(regex)
     if (regex.test(text)) {
       return supplier.name;
     }
