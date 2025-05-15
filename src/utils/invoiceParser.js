@@ -148,7 +148,7 @@ const extractInvoiceNumber = (text, supplierName) => {
 // Extract invoice date
 const extractInvoiceDate = (text) => {
   // First try to find the exact date format for Matzikama invoices (DD/MM/YYYY)
-  const matzikamaDates = text.match(/\b(\d{2}\/\d{2}\/\d{4})\b/g);
+  const matzikamaDates = text.match(/\b(\d{1,2}\/\d{1,2}\/\d{4})\b/i);
   if (matzikamaDates && matzikamaDates.length > 0) {
     console.log([0])
     return matzikamaDates[0];
