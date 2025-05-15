@@ -102,6 +102,3 @@ const extractSupplierName = (text, fileName) => {
 
   return 'Unknown Supplier';
 };
-
-// Rest of the file remains unchanged
-[... rest of the file content remains exactly the same ...]
