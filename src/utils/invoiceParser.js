@@ -124,7 +124,7 @@ const extractInvoiceNumber = (text, supplierName) => {
   }
   // For Nashua Trust Patrol invoices
   if (supplierName === 'Trust Patrol') {
-    const customerRef2Pattern = /020866 DIR\s*(.{6})/i;
+    const customerRef2Pattern =/Tax Invoice\s*(\d{1,2}\/\d{1,2}\/\d{2})\s*([A-Z0-9-]+)/i;
     const customerRef2Match = text.match(customerRef2Pattern);
     if (customerRef2Match && customerRef2Match[1]) {
       return customerRef2Match[1].trim();
