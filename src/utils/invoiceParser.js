@@ -123,6 +123,7 @@ const extractInvoiceNumber = (text, supplierName) => {
     }
   }
 
+  console.log(text)
   // Common patterns for invoice numbers as fallback
   const invoiceNumberPatterns = [
     
