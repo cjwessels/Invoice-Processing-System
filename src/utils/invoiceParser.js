@@ -152,12 +152,12 @@ const extractInvoiceDate = (text) => {
     return matzikamaDates[0];
   }
 
-  // // Check for Mustek date format
-  // const mustekDatePattern = /Invoice Date\s*:\s*(\d{2}\/\d{2}\/\d{4})/i;
-  // const mustekMatch = text.match(mustekDatePattern);
-  // if (mustekMatch && mustekMatch[1]) {
-  //   return mustekMatch[1];
-  // }
+  // Check for Mustek date format
+  const mustekDatePattern = /Invoice Date\s*:\s*(\d{2}\/\d{2}\/\d{4})/i;
+  const mustekMatch = text.match(mustekDatePattern);
+  if (mustekMatch && mustekMatch[1]) {
+    return mustekMatch[1];
+  }
 
   // Common patterns for other date formats as fallback
   const datePatterns = [
@@ -170,11 +170,9 @@ const extractInvoiceDate = (text) => {
 
   for (const pattern of datePatterns) {
     const match = text.match(pattern);
-    console.log(match)
+    const formatedDate = new Date(text)
     if (match && match[1]) {
-      const formatedDate = new Date(match[1])
-      return formatedDate.toISOString().split('T')[0]
-      // return match[1];
+      return match[1];
     }
   }
 
@@ -192,11 +190,8 @@ const extractDueDate = (text) => {
 
   for (const pattern of dueDatePatterns) {
     const match = text.match(pattern);
-    console.log('I\'m running this')
     if (match && match[1]) {
-      const formatedDate = new Date(match[1])
-      // return match[1]
-      return formatedDate.toISOString().split('T')[0];
+      return match[1];
     }
   }
 
