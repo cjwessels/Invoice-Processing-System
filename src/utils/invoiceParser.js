@@ -194,7 +194,9 @@ const extractDueDate = (text) => {
     const match = text.match(pattern);
     console.log('I\'m running this')
     if (match && match[1]) {
-      return match[1];
+      const formatedDate = new Date(match[1])
+      // return match[1]
+      return formatedDate.toISOString().split('T')[0];
     }
   }
 
