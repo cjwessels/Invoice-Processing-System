@@ -12,9 +12,9 @@ export const extractInvoiceData = (text, fileName) => {
   const invoiceNumber = extractInvoiceNumber(cleanText, supplierName);
 
   // Extract dates
-  // const invoiceDate = new Date(extractInvoiceDate(cleanText)).toISOString().split('T')[0];
-  const invoiceDate = extractInvoiceDate(cleanText);
-  const dueDate = extractDueDate(cleanText);
+  const invoiceDate = new Date(extractInvoiceDate(cleanText)).toISOString().split('T')[0];
+  // const invoiceDate = extractInvoiceDate(cleanText);
+  // const dueDate = extractDueDate(cleanText);
 
   // Extract totals
   const { subtotal, tax, total } = extractTotals(cleanText);
@@ -161,6 +161,7 @@ const extractInvoiceDate = (text) => {
   // if (mustekMatch && mustekMatch[1]) {
   //   return mustekMatch[1];
   // }
+  
   // Check for Trust Patrol date format
   const trustInvoiceDates = text.match(/Tax Invoice\s*(\d{1,2}\/\d{1,2}\/\d{2})/i);// const trustMatch = text.match(trustDatePattern);
   if (trustInvoiceDates && trustInvoiceDates.length > 0) {
