@@ -73,7 +73,7 @@ const extractSupplierName = (text, fileName) => {
   console.log(supplierCodes)
 
   const checkMatzikama = () => {
-    const regions = ['Bitterfontein', 'Klawer' ,'RIETPOORT' },'Vanrhynsdorp' ,'Vredendal','Doringbaai']
+    const regions = ['Bitterfontein', 'Klawer' ,'RIETPOORT' ,'Vanrhynsdorp' ,'Vredendal','Doringbaai']
    for (let index = 0; index < bound; index++) {
      
    }
