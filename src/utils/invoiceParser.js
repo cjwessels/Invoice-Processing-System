@@ -72,6 +72,13 @@ const extractSupplierName = (text, fileName) => {
 
   console.log(supplierCodes)
 
+  const checkMatzikama = () => {
+    const regions = ['Bitterfontein', 'Klawer' ,'RIETPOORT' },'Vanrhynsdorp' ,'Vredendal','Doringbaai']
+   for (let index = 0; index < bound; index++) {
+     
+   }
+  }
+
   // Check for patterns in supplierCodes
   for (const supplier of supplierCodes) {
     const regex = new RegExp(supplier.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
