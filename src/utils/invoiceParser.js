@@ -130,10 +130,10 @@ const extractInvoiceNumber = (text, supplierName) => {
     /(?:Invoice|Document)\s*(?:Number|No|No.|#|:|Number:)\s*([A-Z0-9-]+)/i,
     /Inv\s*(?:No.)\s*([A-Z0-9-]+)/i,
     /Invoice\s*(?::|#)\s*([A-Z0-9-]+)/i,
-    /INV(?:OICE)?\s*(?::|#|No|Number)?\s*([A-Z0-9-]+)/i,
+    /INV(?:OICE)?\s*(?::|#|No|Number)?\s*([A-Z0-9-]+)/i,/Tax Invoice\s*(\d{1,2}\/\d{1,2}\/\d{2})\s*([A-Z0-9-]+)/i,
     /Tax Invoice No[.:]\s*([A-Z0-9-]+)/i,
     /Document No\s*([A-Z0-9-]+)/i,
-    /Tax Invoice\s*(\d{1,2}\/\d{1,2}\/\d{2})\s*([A-Z0-9-]+)/i,
+    
   ];
 
   for (const pattern of invoiceNumberPatterns) {
