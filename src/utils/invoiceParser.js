@@ -161,6 +161,7 @@ const extractInvoiceDate = (text) => {
   }
   // Check for Trust Patrol date format
   const trustDateDates = /Tax Invoice\s*(\d{1,2}\/\d{1,2}\/\d{2})/i;
+  console.log(trustDateDates)
   // const trustMatch = text.match(trustDatePattern);
   if (trustDateDates && trustDateDates > 0) {
     return trustDateDates[1];
