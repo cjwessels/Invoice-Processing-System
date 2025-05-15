@@ -43,11 +43,50 @@ function App() {
     createUploadsDir();
   }, []);
 
+  const formatDate = (dateString) => {
+    if (!dateString || dateString === 'Unknown') return dateString;
+    
+    // Split the date string based on common separators
+    const parts = dateString.split(/[\/.-]/);
+    
+    // Check if we have a valid date format
+    if (parts.length !== 3) return dateString;
+    
+    // Determine if the year is in position 0 or 2
+    let year, month, day;
+    if (parts[2].length === 4) {
+      // DD/MM/YYYY format
+      day = parts[0].padStart(2, '0');
+      month = parts[1].padStart(2, '0');
+      year = parts[2];
+    } else if (parts[0].length === 4) {
+      // YYYY/MM/DD format
+      year = parts[0];
+      month = parts[1].padStart(2, '0');
+      day = parts[2].padStart(2, '0');
+    } else {
+      // DD/MM/YY format - convert to YYYY
+      day = parts[0].padStart(2, '0');
+      month = parts[1].padStart(2, '0');
+      year = parts[2].length === 2 ? 
+        (parseInt(parts[2]) > 50 ? '19' : '20') + parts[2] : 
+        parts[2];
+    }
+    
+    return `${year}-${month}-${day}`;
+  };
+
   const columns = [
     { field: 'fileName', headerName: 'File Name', flex: 1, editable: true },
     { field: 'supplierName', headerName: 'Supplier Name', flex: 1, editable: true },
     { field: 'supplierCode', headerName: 'Supplier Code', flex: 1, editable: true },
-    { field: 'invoiceDate', headerName: 'Invoice Date', flex: 1, editable: true },
+    { 
+      field: 'invoiceDate', 
+      headerName: 'Invoice Date', 
+      flex: 1, 
+      editable: true,
+      valueFormatter: (params) => formatDate(params.value)
+    },
     { field: 'invoiceNumber', headerName: 'Invoice Number', flex: 1, editable: true }
   ];
 
