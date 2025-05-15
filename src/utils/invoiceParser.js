@@ -152,16 +152,15 @@ const extractInvoiceDate = (text) => {
   // First try to find the exact date format for Matzikama invoices (DD/MM/YYYY)
   const matzikamaDates = text.match(/\b(\d{1,2}\/\d{1,2}\/\d{4})\b/i);
   if (matzikamaDates && matzikamaDates.length > 0) {
-    console.log([0])
     return matzikamaDates[0];
   }
 
   // Check for Mustek date format
-  // const mustekDatePattern = /Invoice Date\s*:\s*(\d{2}\/\d{2}\/\d{4})/i;
-  // const mustekMatch = text.match(mustekDatePattern);
-  // if (mustekMatch && mustekMatch[1]) {
-  //   return mustekMatch[1];
-  // }
+  const mustekDatePattern = /Invoice Date\s*:\s*(\d{2}\/\d{2}\/\d{4})/i;
+  const mustekMatch = text.match(mustekDatePattern);
+  if (mustekMatch && mustekMatch[1]) {
+    return mustekMatch[1];
+  }
   
   // Check for Trust Patrol date format
   const trustInvoiceDates = text.match(/Tax Invoice\s*(\d{1,2}\/\d{1,2}\/\d{2})/i);// const trustMatch = text.match(trustDatePattern);
