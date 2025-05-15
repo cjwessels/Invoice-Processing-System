@@ -136,8 +136,7 @@ const extractInvoiceNumber = (text, supplierName) => {
 
   // Common patterns for invoice numbers as fallback
   const invoiceNumberPatterns = [
-    /Invoice\s*(?:Number|No|#|:|Number:)\s*([A-Z0-9-]+)/i,
-    /Invoice\s*(?:Number|No.|#|:|Number:)\s*([A-Z0-9-]+)/i,
+    /Invoice|Inv\s*(?:Number|No|No.|#|:|Number:)\s*([A-Z0-9-]+)/i,
     /Invoice\s*(?::|#)\s*([A-Z0-9-]+)/i,
     /INV(?:OICE)?\s*(?::|#|No|Number)?\s*([A-Z0-9-]+)/i,
     /Tax Invoice No[.:]\s*([A-Z0-9-]+)/i,
