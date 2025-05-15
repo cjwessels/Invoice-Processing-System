@@ -1,4 +1,5 @@
 import { parseDate } from './dateUtils';
+import { supplierCodes } from './supplierCodes';
 
 // Main function to extract data from invoice text
 export const extractInvoiceData = (text, fileName) => {
@@ -34,64 +35,44 @@ export const extractInvoiceData = (text, fileName) => {
 
 // Extract supplier name based on patterns in the text or filename
 const extractSupplierName = (text, fileName) => {
-  // Check for Matzikama Vredendal specific pattern
-  if (
-    text.includes('headoff@matzikama.gov.za') &&
-    text.toLowerCase().includes('vredendal')
-  ) {
-    return 'Matzikama Municipality - Vredendal';
+  // First check for specific email patterns
+  if (text.includes('headoff@matzikama.gov.za') && 
+      text.toLowerCase().includes('vredendal')) {
+    const matchedSupplier = supplierCodes.find(s => s.code === 'MATVRE');
+    return matchedSupplier ? matchedSupplier.name : 'Matzikama Municipality - Vredendal';
   }
 
-  // Check for Mustek Limited
+  // Check for specific company names
   if (text.includes('Mustek Limited')) {
-    return 'Mustek Limited';
+    const matchedSupplier = supplierCodes.find(s => s.code === 'MUS001');
+    return matchedSupplier ? matchedSupplier.name : 'Mustek Limited';
   }
 
-  // Check for Theewaterskloof
   if (text.includes('Theewaterskloof')) {
-    return 'Theewaterskloof Municipality';
-  };
-  
-  // Check for Wispernet Melkhoutfontein
-  if (text.includes('Wispernet') &&
-    text.toLowerCase().includes('Melkhoutfontein')
-     ) {
-    return 'Wispernet Melkhoutfontein';
-  };
-  // Check for Nashua Cape Town
-  if (text.includes('Bridoon Trade and Invest 197')
-     ) {
-    return 'Nashua Cape Town';
-  }
-  if (text.includes('Trusc')
-     ) {
-    return 'Trusc Pty ltd';
+    const matchedSupplier = supplierCodes.find(s => s.code === 'THEE01');
+    return matchedSupplier ? matchedSupplier.name : 'Theewaterskloof Municipality';
   }
 
-  // Check for common supplier patterns in text
-  const supplierPatterns = [
-    {
-      regex: /MATZIKAMA MUNISIPALITEIT/i,
-      name: 'Matzikama Municipality - Vredendal',
-    },
-    {
-      regex: /MATZIKAMA MUNICIPALITY/i,
-      name: 'Matzikama Municipality - Vredendal',
-    },
-    { regex: /Mustek Limited/i, name: 'Mustek Limited' },
-    {
-      regex: /Theewaterskloof Municipality/i,
-      name: 'Theewaterskloof Municipality',
-    },
-    { regex: /97102211/i, name: 'Wispernet Melkhoutfontein' },
-    { regex: /Nashua Cape Town/i, name: 'Nashua Cape Town' },
-    { regex: /TRUSC/, name: 'Trusc Pty ltd' }
-    // Add other patterns as needed
-  ];
+  if (text.includes('Wispernet') && text.toLowerCase().includes('melkhoutfontein')) {
+    const matchedSupplier = supplierCodes.find(s => s.code === 'WISMEL');
+    return matchedSupplier ? matchedSupplier.name : 'Wispernet Melkhoutfontein';
+  }
 
-  for (const pattern of supplierPatterns) {
-    if (pattern.regex.test(text)) {
-      return pattern.name;
+  if (text.includes('Bridoon Trade and Invest 197')) {
+    const matchedSupplier = supplierCodes.find(s => s.code === 'NAS001');
+    return matchedSupplier ? matchedSupplier.name : 'Nashua Cape Town';
+  }
+
+  if (text.includes('Trusc')) {
+    const matchedSupplier = supplierCodes.find(s => s.code === 'TRUSC');
+    return matchedSupplier ? matchedSupplier.name : 'Trusc Pty ltd';
+  }
+
+  // Check for patterns in supplierCodes
+  for (const supplier of supplierCodes) {
+    const regex = new RegExp(supplier.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    if (regex.test(text)) {
+      return supplier.name;
     }
   }
 
@@ -116,7 +97,7 @@ const extractInvoiceNumber = (text, supplierName) => {
     return matzikamaBelastingMatch[1].trim();
   }
 
-  // For Theewaterskloof invoices, get 15 characters after CUSTOMER REF2
+  // For Theewaterskloof invoices
   if (supplierName === 'Theewaterskloof Municipality') {
     const theewaterskloofPattern = /(?:0201014014.*?){2}\s*(.{15})/i;
     const theewaterskloofMatch = text.match(theewaterskloofPattern);
@@ -125,7 +106,7 @@ const extractInvoiceNumber = (text, supplierName) => {
     }
   }
 
-  // For Nashua Cape Town invoices, get 6 characters after 020866 DIR
+  // For Nashua Cape Town invoices
   if (supplierName === 'Nashua Cape Town') {
     const customerRef2Pattern = /020866 DIR\s*(.{6})/i;
     const customerRef2Match = text.match(customerRef2Pattern);
