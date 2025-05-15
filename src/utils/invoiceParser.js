@@ -192,6 +192,7 @@ const extractDueDate = (text) => {
 
   for (const pattern of dueDatePatterns) {
     const match = text.match(pattern);
+    console.log('I\'m running this')
     if (match && match[1]) {
       return match[1];
     }
