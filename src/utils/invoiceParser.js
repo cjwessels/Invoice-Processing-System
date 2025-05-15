@@ -85,7 +85,7 @@ const extractSupplierName = (text, fileName) => {
     console.log(regex)
     if (regex.test(text)) {
       console.log(xt.includes('Matzikama') ? checkMatzikama : 
-       supplier.name;)
+       supplier.name)
       text.includes('Matzikama') ? checkMatzikama : 
        supplier.name;
     }
