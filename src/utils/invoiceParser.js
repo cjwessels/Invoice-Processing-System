@@ -12,8 +12,8 @@ export const extractInvoiceData = (text, fileName) => {
   const invoiceNumber = extractInvoiceNumber(cleanText, supplierName);
 
   // Extract dates
-  const invoiceDate = new Date(extractInvoiceDate(cleanText)).toISOString().split('T')[0];
-  // const invoiceDate = extractInvoiceDate(cleanText).toString();
+  // const invoiceDate = new Date(extractInvoiceDate(cleanText)).toISOString().split('T')[0];
+  const invoiceDate = extractInvoiceDate(cleanText).toString();
   const dueDate = extractDueDate(cleanText);
 
   // Extract totals
