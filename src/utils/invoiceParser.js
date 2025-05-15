@@ -170,8 +170,10 @@ const extractInvoiceDate = (text) => {
 
   for (const pattern of datePatterns) {
     const match = text.match(pattern);
+    const formatedDate = new Date(text)
     if (match && match[1]) {
-      return match[1];
+      return formatedDate
+      // return match[1];
     }
   }
 
