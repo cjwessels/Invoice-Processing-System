@@ -70,7 +70,7 @@ const extractSupplierName = (text, fileName) => {
     return matchedSupplier ? matchedSupplier.name : 'Trusc Pty ltd';
   }
 
-  console.log(supplierCodes)
+  // console.log(supplierCodes)
 
   const checkMatzikama = () => {
     const regions = ['Bitterfontein', 'Klawer' ,'RIETPOORT' ,'Vanrhynsdorp' ,'Vredendal','Doringbaai']
