@@ -63,6 +63,10 @@ const extractSupplierName = (text, fileName) => {
      ) {
     return 'Nashua Cape Town';
   }
+  if (text.includes('Trusc')
+     ) {
+    return 'Trusc Pty ltd';
+  }
 
   // Check for common supplier patterns in text
   const supplierPatterns = [
