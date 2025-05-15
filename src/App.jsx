@@ -95,7 +95,12 @@ function App() {
       flex: 1, 
       editable: true,
       valueGetter: (params) => parseDate(params.value),
-      valueFormatter: (params) => formatDate(params.value)
+      valueFormatter: (params) => {
+        if (!params || !params.value) {
+          return 'Unknown';
+        }
+        return formatDate(params.value);
+      }
     },
     { field: 'invoiceNumber', headerName: 'Invoice Number', flex: 1, editable: true }
   ];
