@@ -43,37 +43,46 @@ function App() {
     createUploadsDir();
   }, []);
 
-  const formatDate = (dateString) => {
-    if (!dateString || dateString === 'Unknown') return dateString;
+  const parseDate = (dateString) => {
+    if (!dateString || dateString === 'Unknown') return null;
     
     // Split the date string based on common separators
     const parts = dateString.split(/[\/.-]/);
     
     // Check if we have a valid date format
-    if (parts.length !== 3) return dateString;
+    if (parts.length !== 3) return null;
+    
+    let year, month, day;
     
     // Determine if the year is in position 0 or 2
-    let year, month, day;
     if (parts[2].length === 4) {
       // DD/MM/YYYY format
-      day = parts[0].padStart(2, '0');
-      month = parts[1].padStart(2, '0');
-      year = parts[2];
+      day = parseInt(parts[0], 10);
+      month = parseInt(parts[1], 10) - 1; // JavaScript months are 0-based
+      year = parseInt(parts[2], 10);
     } else if (parts[0].length === 4) {
       // YYYY/MM/DD format
-      year = parts[0];
-      month = parts[1].padStart(2, '0');
-      day = parts[2].padStart(2, '0');
+      year = parseInt(parts[0], 10);
+      month = parseInt(parts[1], 10) - 1;
+      day = parseInt(parts[2], 10);
     } else {
       // DD/MM/YY format - convert to YYYY
-      day = parts[0].padStart(2, '0');
-      month = parts[1].padStart(2, '0');
-      year = parts[2].length === 2 ? 
-        (parseInt(parts[2]) > 50 ? '19' : '20') + parts[2] : 
-        parts[2];
+      day = parseInt(parts[0], 10);
+      month = parseInt(parts[1], 10) - 1;
+      const twoDigitYear = parseInt(parts[2], 10);
+      year = twoDigitYear > 50 ? 1900 + twoDigitYear : 2000 + twoDigitYear;
     }
     
-    return `${year}-${month}-${day}`;
+    return new Date(year, month, day);
+  };
+
+  const formatDate = (date) => {
+    if (!date) return 'Unknown';
+    if (typeof date === 'string') {
+      date = parseDate(date);
+      if (!date) return 'Unknown';
+    }
+    return date.toISOString().split('T')[0];
   };
 
   const columns = [
@@ -85,6 +94,7 @@ function App() {
       headerName: 'Invoice Date', 
       flex: 1, 
       editable: true,
+      valueGetter: (params) => parseDate(params.value),
       valueFormatter: (params) => formatDate(params.value)
     },
     { field: 'invoiceNumber', headerName: 'Invoice Number', flex: 1, editable: true }
