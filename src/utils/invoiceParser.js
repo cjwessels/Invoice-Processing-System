@@ -160,10 +160,10 @@ const extractInvoiceDate = (text) => {
     return mustekMatch[1];
   }
   // Check for Trust Patrol date format
-  const trustDatePattern = /Tax Invoice\s*(\d{1,2}\/\d{1,2}\/\d{2})/i;
-  const trustMatch = text.match(trustDatePattern);
-  if (trustMatch && trustkMatch[1]) {
-    return trustMatch[1];
+  const trustDateDates = /Tax Invoice\s*(\d{1,2}\/\d{1,2}\/\d{2})/i;
+  // const trustMatch = text.match(trustDatePattern);
+  if (trustDateDates && trustDateDates > 0) {
+    return trustDateDates[1];
   }
 
   // Common patterns for other date formats as fallback
