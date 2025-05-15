@@ -12,7 +12,7 @@ export const extractInvoiceData = (text, fileName) => {
   const invoiceNumber = extractInvoiceNumber(cleanText, supplierName);
 
   // Extract dates
-  const invoiceDate = extractInvoiceDate(cleanText);
+  const invoiceDate = new Date(extractInvoiceDate(cleanText));
   const dueDate = extractDueDate(cleanText);
 
   // Extract totals
