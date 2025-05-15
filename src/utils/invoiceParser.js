@@ -78,12 +78,12 @@ const extractSupplierName = (text, fileName) => {
      text.includes(region) ? `Matzikama Municipality  - ${region}` : 'Matzikama Municipality'
    }
   }
-
+checkMatzikama()
   // Check for patterns in supplierCodes
   for (const supplier of supplierCodes) {
     const regex = new RegExp(supplier.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
     // console.log(regex)
-    console.log(text.includes('Matzikama') ? checkMatzikama() : 
+    console.log(text.includes('Matzikama') ? checkMatzikama : 
        'no')
     if (regex.test(text)) {
       
