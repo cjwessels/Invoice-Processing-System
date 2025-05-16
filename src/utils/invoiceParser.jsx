@@ -84,7 +84,7 @@ const extractSupplierName = (text, fileName) => {
     for (const [region, code] of Object.entries(regions)) {
       if (text.includes(region)) {
         const matchedSupplier = supplierCodes.find(s => s.code === code);
-        return matchedSupplier ? 'BOB' : `Matzikama Municipality - ${region}`;
+        return matchedSupplier ? matchedSupplier.name : `Matzikama Municipality - ${region}`;
       }
     }
     // If no specific region found, return generic Matzikama
