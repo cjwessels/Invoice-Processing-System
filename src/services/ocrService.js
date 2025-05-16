@@ -62,7 +62,7 @@ export const processInvoices = async (files) => {
 
   for (const file of files) {
     try {
-      console.log(`Processing file: ${file.name}`);
+      // console.log(`Processing file: ${file.name}`);
       const fileData = await processPDF(file);
 
       // For Mustek invoices, create only one row per file
