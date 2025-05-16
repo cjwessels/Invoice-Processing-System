@@ -121,3 +121,55 @@ export const extractInvoiceNumber = (text, supplierName) => {
 
   return match ? match[1] : 'Unknown';
 };
+
+// Extract invoice date from text
+export const extractInvoiceDate = (text) => {
+  const datePattern = /(?:Invoice Date|Date):\s*(\d{1,2}[-/]\d{1,2}[-/]\d{2,4})/i;
+  const match = text.match(datePattern);
+  return match ? parseDate(match[1]) : null;
+};
+
+// Extract due date from text
+export const extractDueDate = (text) => {
+  const datePattern = /(?:Due Date|Payment Due):\s*(\d{1,2}[-/]\d{1,2}[-/]\d{2,4})/i;
+  const match = text.match(datePattern);
+  return match ? parseDate(match[1]) : null;
+};
+
+// Extract totals from text
+export const extractTotals = (text) => {
+  // Initialize default values
+  let subtotal = 0;
+  let tax = 0;
+  let total = 0;
+
+  // Pattern for currency amounts (handles both with and without decimal points)
+  const currencyPattern = /(?:R|ZAR)\s*(\d+(?:\.\d{2})?)/i;
+
+  // Look for subtotal
+  const subtotalMatch = text.match(/(?:Subtotal|Sub-total).*?(?:R|ZAR)\s*(\d+(?:\.\d{2})?)/i);
+  if (subtotalMatch) {
+    subtotal = parseFloat(subtotalMatch[1]);
+  }
+
+  // Look for VAT/tax
+  const taxMatch = text.match(/(?:VAT|Tax).*?(?:R|ZAR)\s*(\d+(?:\.\d{2})?)/i);
+  if (taxMatch) {
+    tax = parseFloat(taxMatch[1]);
+  }
+
+  // Look for total
+  const totalMatch = text.match(/(?:Total|Amount Due).*?(?:R|ZAR)\s*(\d+(?:\.\d{2})?)/i);
+  if (totalMatch) {
+    total = parseFloat(totalMatch[1]);
+  }
+
+  return { subtotal, tax, total };
+};
+
+// Extract line items from text
+export const extractLineItems = (text, supplierName) => {
+  // This is a placeholder implementation
+  // You would need to implement specific logic based on your invoice formats
+  return [];
+};
