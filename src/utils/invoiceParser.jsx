@@ -77,7 +77,7 @@ const regions = {
   'Vanrhynsdorp': 'MATVAN',
   'Vredendal': 'MATVRE',
   'Doringbaai': 'MATZDO',
-  '8170': 'Rent'
+  'console.log(`Found specific region: ${region}`);': 'Rent'
 };
 
 // If text contains "Matzikama", check for specific regions
