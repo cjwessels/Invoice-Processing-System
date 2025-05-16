@@ -70,30 +70,26 @@ const extractSupplierName = (text, fileName) => {
   }
 
   // Check for Matzikama Municipality with regions
-  const regions = {
-    'Bitterfontein': 'MATBIT',
-    'Klawer': 'MATKLA',
-    'RIETPOORT': 'MATRIE',
-    'Vanrhynsdorp': 'MATVAN',
-    'Vredendal': 'MATVRE',
-    'Doringbaai': 'MATZDO'
-  };
-
-  // If text contains "Matzikama", check for specific regions
   if (text.toLowerCase().includes('matzikama')) {
-    let matzRegion
-    for (const [region, code] of Object.entries(regions)) {
-      if (text.includes(region)) {
-        console.log(region)
-        const matchedSupplier = supplierCodes.find(s => s.code === code);
-        matzRegion =  matchedSupplier ? matchedSupplier.name : `Matzikama Municipality - ${region}`;
-      }
+  let matzRegion = null; // Initialize with null
+  
+  for (const [region, code] of Object.entries(regions)) {
+    if (text.includes(region)) {
+      console.log(`Found region: ${region}`);
+      const matchedSupplier = supplierCodes.find(s => s.code === code);
+      matzRegion = matchedSupplier ? matchedSupplier.name : `Matzikama Municipality - ${region}`;
+      break; // Exit the loop once we find a match
     }
-    // If no specific region found, return generic Matzikama
-    // const matchedSupplier = supplierCodes.find(s => s.code === 'MATZI');
-    // return matchedSupplier ? matchedSupplier.name : 'Matzikama Municipality';
-    return matzRegion
   }
+  
+  // If no specific region found, return generic Matzikama
+  if (matzRegion === null) {
+    const matchedSupplier = supplierCodes.find(s => s.code === 'MATZI');
+    matzRegion = matchedSupplier ? matchedSupplier.name : 'Matzikama Municipality';
+  }
+  
+  return matzRegion;
+}
 
   // Check for patterns in supplierCodes
   for (const supplier of supplierCodes) {
