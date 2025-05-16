@@ -37,11 +37,11 @@ export const extractInvoiceData = (text, fileName) => {
 // Extract supplier name based on patterns in the text or filename
 const extractSupplierName = (text, fileName) => {
   // First check for specific email patterns
-  if (text.includes('headoff@matzikama.gov.za') && 
-      text.toLowerCase().includes('vredendal')) {
-    const matchedSupplier = supplierCodes.find(s => s.code === 'MATVRE');
-    return matchedSupplier ? matchedSupplier.name : 'Matzikama Municipality - Vredendal';
-  }
+  // if (text.includes('headoff@matzikama.gov.za') && 
+  //     text.toLowerCase().includes('vredendal')) {
+  //   const matchedSupplier = supplierCodes.find(s => s.code === 'MATVRE');
+  //   return matchedSupplier ? matchedSupplier.name : 'Matzikama Municipality - Vredendal';
+  // }
 
   // Check for specific company names
   if (text.includes('Mustek Limited')) {
