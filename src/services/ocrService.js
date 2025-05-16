@@ -32,7 +32,7 @@ export const processPDF = async (file) => {
         pageTexts.push(pageText);
       }
     } else {
-      console.log(`Mustek invoice detected: ${file.name} - Processing only first page`);
+      // console.log(`Mustek invoice detected: ${file.name} - Processing only first page`);
     }
 
     // Combine all page texts
