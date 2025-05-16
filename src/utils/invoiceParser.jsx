@@ -83,6 +83,7 @@ const regions = {
 if (text.toLowerCase().includes('matzikama')) {
   // First check if any specific region is mentioned
   for (const [region, code] of Object.entries(regions)) {
+    console.log(`Looking for: ${region}`);
     if (text.includes(region)) {
       console.log(`Found specific region: ${region}`);
       const matchedSupplier = supplierCodes.find(s => s.code === code);
