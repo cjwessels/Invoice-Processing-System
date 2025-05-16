@@ -84,8 +84,9 @@ const extractSupplierName = (text, fileName) => {
     let matzRegion
     for (const [region, code] of Object.entries(regions)) {
       console.log(region)
+      const matchedSupplier = supplierCodes.find(s => s.code === code);
       if (text.includes(region)) {       
-        const matchedSupplier = supplierCodes.find(s => s.code === code);
+        
         matzRegion =  matchedSupplier ? matchedSupplier.name : `Matzikama Municipality - ${region}`;
       }
       else
