@@ -76,7 +76,8 @@ const regions = {
   'RIETPOORT': 'MATRIE',
   'Vanrhynsdorp': 'MATVAN',
   'Vredendal': 'MATVRE',
-  'Doringbaai': 'MATZDO'
+  'Doringbaai': 'MATZDO',
+  'RENTAL': 'Rent'
 };
 
 // If text contains "Matzikama", check for specific regions
