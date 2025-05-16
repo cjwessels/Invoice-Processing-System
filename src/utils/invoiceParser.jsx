@@ -82,9 +82,9 @@ const extractSupplierName = (text, fileName) => {
   // If text contains "Matzikama", check for specific regions
   if (text.toLowerCase().includes('matzikama')) {
     let matzRegion
-    for (const [region, code] of Object.entries(regions)) {
+    for (const [region, code] of Object.entries(regions)) {console.log(region)
       if (text.includes(region)) {
-        console.log(region)
+        
         const matchedSupplier = supplierCodes.find(s => s.code === code);
         matzRegion =  matchedSupplier ? matchedSupplier.name : `Matzikama Municipality - ${region}`;
       }
