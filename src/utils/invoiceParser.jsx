@@ -58,10 +58,10 @@ const extractSupplierName = (text, fileName) => {
   }
 
   
-  if (text.includes('Mustek Limited')) {
-    const matchedSupplier = supplierCodes.find(s => s.code === 'MUS001');
-    return matchedSupplier ? matchedSupplier.name : 'Mustek Limited';
-  }
+  // if (text.includes('Mustek Limited')) {
+  //   const matchedSupplier = supplierCodes.find(s => s.code === 'MUS001');
+  //   return matchedSupplier ? matchedSupplier.name : 'Mustek Limited';
+  // }
 
   if (text.includes('Theewaterskloof')) {
     const matchedSupplier = supplierCodes.find(s => s.code === 'THEE01');
