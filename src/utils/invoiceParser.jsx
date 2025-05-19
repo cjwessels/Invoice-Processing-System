@@ -50,7 +50,21 @@ const extractSupplierName = (text, fileName) => {
     text.toLowerCase().includes('vredendal')) {
     const matchedSupplier = supplierCodes.find(s => s.code === 'MATVRE');
     return matchedSupplier ? matchedSupplier.name : 'Matzikama Municipality - Vredendal';
-    }
+  }
+  if (text.toLowerCase().includes('WISPERNET') && text.toLowerCase().includes('MELKHOUTFONTEIN')) {
+    const matchedSupplier = supplierCodes.find(s => s.code === 'WISMEL');
+    return matchedSupplier ? matchedSupplier.name : 'Wispernet Melkhoutfontein';
+  }
+
+  if (text.includes('Bridoon Trade and Invest 197')) {
+    const matchedSupplier = supplierCodes.find(s => s.code === 'NAS001');
+    return matchedSupplier ? matchedSupplier.name : 'Nashua Cape Town';
+  }
+
+  if (text.includes('Trusc')) {
+    const matchedSupplier = supplierCodes.find(s => s.code === 'TRUSC');
+    return matchedSupplier ? matchedSupplier.name : 'Trusc Pty ltd';
+  }
   return null; // or return a default like { code: "", name: "" }
 }
   
@@ -68,20 +82,7 @@ const extractSupplierName = (text, fileName) => {
   //   return matchedSupplier ? matchedSupplier.name : 'Theewaterskloof Municipality';
   // }
 
-  if (text.toLowerCase().includes('WISPERNET') && text.toLowerCase().includes('MELKHOUTFONTEIN')) {
-    const matchedSupplier = supplierCodes.find(s => s.code === 'WISMEL');
-    return matchedSupplier ? matchedSupplier.name : 'Wispernet Melkhoutfontein';
-  }
-
-  if (text.includes('Bridoon Trade and Invest 197')) {
-    const matchedSupplier = supplierCodes.find(s => s.code === 'NAS001');
-    return matchedSupplier ? matchedSupplier.name : 'Nashua Cape Town';
-  }
-
-  if (text.includes('Trusc')) {
-    const matchedSupplier = supplierCodes.find(s => s.code === 'TRUSC');
-    return matchedSupplier ? matchedSupplier.name : 'Trusc Pty ltd';
-  }
+  
 
  // Check for Matzikama Municipality with regions
 const regions = {
