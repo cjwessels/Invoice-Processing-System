@@ -37,6 +37,19 @@ export const extractInvoiceData = (text, fileName) => {
 console.log(supplierCodes)
 // Extract supplier name based on patterns in the text or filename
 const extractSupplierName = (text, fileName) => {
+
+  function findSupplierFromText(text) {
+  const matchedSupplier = supplierCodes.find(supplier =>
+    text.includes(supplier.name)
+  );
+
+  if (matchedSupplier) {
+    return { code: matchedSupplier.code, name: matchedSupplier.name };
+  }
+
+  return null; // or return a default like { code: "", name: "" }
+}
+  
   // First check for specific email patterns
   if (text.includes('headoff@matzikama.gov.za') && 
       text.toLowerCase().includes('vredendal')) {
