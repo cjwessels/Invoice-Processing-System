@@ -46,11 +46,11 @@ const extractSupplierName = (text, fileName) => {
   if (matchedSupplier) {
     return { code: matchedSupplier.code, name: matchedSupplier.name };
   }
-if (text.includes('headoff@matzikama.gov.za') && 
-      text.toLowerCase().includes('vredendal')) {
-    const matchedSupplier = supplierCodes.find(s => s.code === 'MATVRE');
-    return matchedSupplier ? matchedSupplier.name : 'Matzikama Municipality - Vredendal';
-  }
+  if (text.includes('headoff@matzikama.gov.za') && 
+        text.toLowerCase().includes('vredendal')) {
+      const matchedSupplier = supplierCodes.find(s => s.code === 'MATVRE');
+      return matchedSupplier ? matchedSupplier.name : 'Matzikama Municipality - Vredendal';
+    }
   return null; // or return a default like { code: "", name: "" }
 }
   
