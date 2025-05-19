@@ -78,10 +78,10 @@ const extractSupplierName = (text, fileName) => {
     return matchedSupplier ? matchedSupplier.name : 'Nashua Cape Town';
   }
 
-  // if (text.includes('Trusc')) {
-  //   const matchedSupplier = supplierCodes.find(s => s.code === 'TRUSC');
-  //   return matchedSupplier ? matchedSupplier.name : 'Trusc Pty ltd';
-  // }
+  if (text.includes('Trusc')) {
+    const matchedSupplier = supplierCodes.find(s => s.code === 'TRUSC');
+    return matchedSupplier ? matchedSupplier.name : 'Trusc Pty ltd';
+  }
 
  // Check for Matzikama Municipality with regions
 const regions = {
