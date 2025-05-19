@@ -61,10 +61,10 @@ const extractSupplierName = (text, fileName) => {
     return matchedSupplier ? matchedSupplier.name : 'Nashua Cape Town';
   }
 
-  // if (text.includes('Trusc')) {
-  //   const matchedSupplier = supplierCodes.find(s => s.code === 'TRUSC');
-  //   return matchedSupplier ? matchedSupplier.name : 'Trusc Pty ltd';
-  // }
+  if (text.toLowerCase().includes('Trusc')) {
+    const matchedSupplier = supplierCodes.find(s => s.code === 'TRUSC');
+    return matchedSupplier ? matchedSupplier.name : 'Trusc Pty ltd';
+  }
   return null; // or return a default like { code: "", name: "" }
 }
   
