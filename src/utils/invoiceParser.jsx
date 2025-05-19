@@ -61,7 +61,7 @@ const extractSupplierName = (text, fileName) => {
     return matchedSupplier ? matchedSupplier.name : 'Nashua Cape Town';
   }
 
-  if (text.toLowerCase().includes('Trusc')) {
+  if (text.toLowerCase().includes('2023/529949/07')) {
     const matchedSupplier = supplierCodes.find(s => s.code === 'TRUSC');
     return matchedSupplier ? matchedSupplier.name : 'Trusc Pty ltd';
   }
