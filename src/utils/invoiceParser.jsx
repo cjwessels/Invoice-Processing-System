@@ -34,7 +34,7 @@ export const extractInvoiceData = (text, fileName) => {
   };
 };
 
-console.log(supplierCodes)
+
 // Extract supplier name based on patterns in the text or filename
 const extractSupplierName = (text, fileName) => {
 
