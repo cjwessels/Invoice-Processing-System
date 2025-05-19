@@ -63,10 +63,10 @@ const extractSupplierName = (text, fileName) => {
   //   return matchedSupplier ? matchedSupplier.name : 'Mustek Limited';
   // }
 
-  if (text.includes('Theewaterskloof')) {
-    const matchedSupplier = supplierCodes.find(s => s.code === 'THEE01');
-    return matchedSupplier ? matchedSupplier.name : 'Theewaterskloof Municipality';
-  }
+  // if (text.includes('Theewaterskloof')) {
+  //   const matchedSupplier = supplierCodes.find(s => s.code === 'THEE01');
+  //   return matchedSupplier ? matchedSupplier.name : 'Theewaterskloof Municipality';
+  // }
 
   if (text.toLowerCase().includes('WISPERNET') && text.toLowerCase().includes('MELKHOUTFONTEIN')) {
     const matchedSupplier = supplierCodes.find(s => s.code === 'WISMEL');
