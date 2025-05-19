@@ -68,7 +68,7 @@ const extractSupplierName = (text, fileName) => {
     return matchedSupplier ? matchedSupplier.name : 'Theewaterskloof Municipality';
   }
 
-  if (text.toLowerCase().includes('Wispernet') && text.toLowerCase().includes('MELKHOUTFONTEIN')) {
+  if (text.toLowerCase().includes('WISPERNET') && text.toLowerCase().includes('MELKHOUTFONTEIN')) {
     const matchedSupplier = supplierCodes.find(s => s.code === 'WISMEL');
     return matchedSupplier ? matchedSupplier.name : 'Wispernet Melkhoutfontein';
   }
