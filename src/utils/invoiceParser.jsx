@@ -147,6 +147,21 @@ export const extractInvoiceDate = (text) => {
   return match ? parseDate(match[1]) : null;
 };
 
+const datePatterns = [
+    /Invoice Date:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
+    /Date:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
+    /DATE OF ACCOUNT:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
+    /Invoice Date\s*:\s*(\d{2}\/\d{2}\/\d{4})/i,
+    /\b(\d{4}\/\d{2}\/\d{2})\b/g,
+  ];
+
+  for (const pattern of datePatterns) {
+    const match = text.match(pattern);
+    if (match && match[1]) {
+      return match[1];
+    }
+  }
+
 // Extract due date from text
 export const extractDueDate = (text) => {
   const datePattern = /(?:Due Date|Payment Due):\s*(\d{1,2}[-/]\d{1,2}[-/]\d{2,4})/i;
