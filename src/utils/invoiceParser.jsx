@@ -152,6 +152,8 @@ export const extractInvoiceDate = (text) => {
   }
 
   // Check for Mustek date format
+console.log(text)
+  
   const mustekDatePattern = /Invoice Date\s*:\s*(\d{2}\/\d{2}\/\d{4})/i;
   const mustekMatch = text.match(mustekDatePattern);
   if (mustekMatch && mustekMatch[1]) {
