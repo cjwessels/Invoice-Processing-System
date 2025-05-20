@@ -146,6 +146,18 @@ export const extractInvoiceDate = (text) => {
   // const match = text.match(datePattern);
   // return match ? parseDate(match[1]) : null;
 
+  const matzikamaDates = text.match(/\b(\d{2}\/\d{2}\/\d{4})\b/g);
+  if (matzikamaDates && matzikamaDates.length > 0) {
+    return matzikamaDates[0];
+  }
+
+  // Check for Mustek date format
+  const mustekDatePattern = /Invoice Date\s*:\s*(\d{2}\/\d{2}\/\d{4})/i;
+  const mustekMatch = text.match(mustekDatePattern);
+  if (mustekMatch && mustekMatch[1]) {
+    return mustekMatch[1];
+  }
+
 const datePatterns = [
     /Invoice Date:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
     /Date:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
