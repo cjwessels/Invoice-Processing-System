@@ -142,7 +142,7 @@ export const extractInvoiceNumber = (text, supplierName) => {
 
 // Extract invoice date from text
 export const extractInvoiceDate = (text) => {
-  const datePattern = /(?:Invoice Date|Date):\s*(\d{1,2}[-/]\d{1,2}[-/]\d{2,4})/i;
+  const datePattern = /(?:Invoice Date|Date|):\s*(\d{1,2}[-/]\d{1,2}[-/]\d{2,4})/i;
   const match = text.match(datePattern);
   return match ? parseDate(match[1]) : null;
 };
