@@ -134,6 +134,12 @@ export const extractInvoiceNumber = (text, supplierName) => {
     'Matzikama Municipality - Vanrhynsdorp': /BELASTING FAKTUUR NR\.\s*(\S+)/i,
   };
 
+  const matzikamaBelastingPattern = /BELASTING FAKTUUR NR\.\s*(\S+)/i;
+  const matzikamaBelastingMatch = text.match(matzikamaBelastingPattern);
+  if (matzikamaBelastingMatch && matzikamaBelastingMatch[1]) {
+    return matzikamaBelastingMatch[1].trim();
+  }
+
   // Use supplier-specific pattern if available, otherwise use default
   const pattern = patterns[supplierName] || defaultPattern;
   const match = text.match(pattern);
