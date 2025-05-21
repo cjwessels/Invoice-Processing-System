@@ -123,7 +123,7 @@ console.log(text)
 // Extract invoice number based on supplier-specific patterns
 export const extractInvoiceNumber = (text, supplierName) => {
   // Default pattern for invoice numbers
-  const defaultPattern = /(?:Inv No.|Reference|Docuemnt No)[\s#:]*([A-Z0-9-]+)/i;
+  const defaultPattern = /(?:Invoice|INV|Inv No.|Reference|Docuemnt No)[\s#:]*([A-Z0-9-]+)/i;
   
   // Supplier-specific patterns
   const patterns = {
