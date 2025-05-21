@@ -130,6 +130,7 @@ export const extractInvoiceNumber = (text, supplierName) => {
     // 'Mustek Limited': /CUSTOMER REF2:?\s*([A-Z0-9-]+)s*([A-Z0-9-]+)/i,
     'Mustek Limited': /CUSTOMER REF2\s+(INV-\d+\s+[A-Z]+)/i,
     'Theewaterskloof Municipality': /Account Number:?\s*([0-9]+)/i,
+    'Trusc Pty ltd': /Inv No.?\s*([A-Z0-9]+)/i,
     'Nashua Cape Town': /020866 DIR\s*([A-Z0-9-]+)/i,
     'Matzikama Municipality - Vanrhynsdorp': /BELASTING FAKTUUR NR\.\s*(\S+)/i,
   };  
