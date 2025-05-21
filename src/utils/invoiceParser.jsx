@@ -141,7 +141,7 @@ export const extractInvoiceNumber = (text, supplierName) => {
   const match = text.match(pattern);
 
   // return match ? match[1] : 'Unknown';
-  console.log(match[2])
+  console.log(match)
   // return match ? (supplierName === 'Trust Patrol' ? match[2] : match[1]) : 'Unknown';
 if (!match) return 'Unknown';
 if (supplierName === 'Trust Patrol') return match[2];
