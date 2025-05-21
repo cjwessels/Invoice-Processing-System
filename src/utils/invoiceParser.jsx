@@ -137,7 +137,7 @@ export const extractInvoiceNumber = (text, supplierName) => {
   };  
 
   // Use supplier-specific pattern if available, otherwise use default
-  const pattern = patterns[supplierName] || defaultPattern;
+  const pattern = patterns[supplierName] ;
   const match = text.match(pattern);
 
   return match ? match[1] : 'Unknown';
