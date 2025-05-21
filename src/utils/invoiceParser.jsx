@@ -119,7 +119,7 @@ if (text.toLowerCase().includes('matzikama')) {
 
   return 'Unknown Supplier';
 };
-console.log(text)
+// console.log(text)
 // Extract invoice number based on supplier-specific patterns
 export const extractInvoiceNumber = (text, supplierName) => {
   // Default pattern for invoice numbers
