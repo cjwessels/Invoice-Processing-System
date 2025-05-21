@@ -137,10 +137,13 @@ export const extractInvoiceNumber = (text, supplierName) => {
   };  
 
   // Use supplier-specific pattern if available, otherwise use default
-  const pattern = patterns[supplierName] || defaultPattern;
+  // const pattern = patterns[supplierName] || defaultPattern;
   const match = text.match(pattern);
 
-  return match ? match[1] : 'Unknown';
+  // return match ? match[1] : 'Unknown';
+  if (!match) return 'Unknown';
+if (supplierName === 'Trust Patrol') return match[2];
+return match[1];
 };
 
 // Extract invoice date from text
