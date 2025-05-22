@@ -113,6 +113,8 @@ if (text.toLowerCase().includes('matzikama')) {
   'Bridgton': 'WISPER',
 };
 
+  console.log(text.toLowerCase().includes('WISPERNET'))
+
   // If text contains "Wispernet", check for specific regions
 if (text.toLowerCase().includes('WISPERNET')) {
   // First check if any specific region is mentioned
