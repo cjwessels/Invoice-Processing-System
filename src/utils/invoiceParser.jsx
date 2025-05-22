@@ -96,16 +96,16 @@ const matzikamaRegions = {
   console.log(text)
 
 
-// If text contains "Matzikama", check for specific regions
-// if (text.toLowerCase().includes('matzikama')) {
-//   console.log(text.toLowerCase().includes('Matzikama') ? true : false)
-//   // First check if any specific region is mentioned
-//   for (const [region, code] of Object.entries(matzikamaRegions)) {
-//     if (text.toLowerCase().includes(region.toLowerCase())) {
-//       const matchedSupplier = supplierCodes.find(s => s.code === code);
-//       return matchedSupplier ? matchedSupplier.name : `Matzikama Municipality - ${region}`;
-//     }
-//   }
+If text contains "Matzikama", check for specific regions
+if (text.toLowerCase().includes('matzikama')) {
+  console.log(text.toLowerCase().includes('Matzikama') ? true : false)
+  // First check if any specific region is mentioned
+  for (const [region, code] of Object.entries(matzikamaRegions)) {
+    if (text.toLowerCase().includes(region.toLowerCase())) {
+      const matchedSupplier = supplierCodes.find(s => s.code === code);
+      return matchedSupplier ? matchedSupplier.name : `Matzikama Municipality - ${region}`;
+    }
+  }
 
     
   const wispernetRegions = {
@@ -131,10 +131,10 @@ if (text.toLowerCase().includes('WISPERNET')) {
 
   
   // If we get here, no specific region was found, so return generic Matzikama
-//   const matchedSupplier = supplierCodes.find(s => s.code === 'MATZI');
-//   return matchedSupplier ? matchedSupplier.name : 'Matzikama Municipality';
-// }
-  console.log('IM HERE')
+  const matchedSupplier = supplierCodes.find(s => s.code === 'MATZI');
+  return matchedSupplier ? matchedSupplier.name : 'Matzikama Municipality';
+}
+  console.log('IM HERE AGAIN')
 
   // Check for patterns in supplierCodes
   for (const supplier of supplierCodes) {
