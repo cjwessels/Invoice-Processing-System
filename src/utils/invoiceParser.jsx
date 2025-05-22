@@ -85,7 +85,7 @@ if (text.toLowerCase().includes('matzikama')) {
       return matchedSupplier ? matchedSupplier.name : `Matzikama Municipality - ${region}`;
     }
   }  
-}
+};
 
 
   
