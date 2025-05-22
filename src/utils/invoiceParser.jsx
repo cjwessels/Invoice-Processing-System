@@ -105,7 +105,7 @@ if (text.toLowerCase().includes('matzikama')) {
       const matchedSupplier = supplierCodes.find(s => s.code === code);
       return matchedSupplier ? matchedSupplier.name : `Matzikama Municipality - ${region}`;
     }
-  }
+  };
 
     
   const wispernetRegions = {
