@@ -139,6 +139,7 @@ if (text.toLowerCase().includes('WISPERNET')) {
       return supplier.name;
     }
   }
+  console.log(text)
 console.log(text.toLowerCase().includes('Matzikama') ? true : false)
   return 'Unknown Supplier';
 };
@@ -183,7 +184,7 @@ export const extractInvoiceDate = (text) => {
   }
 
   // Check for Mustek date format
-console.log(text)
+
   
   const mustekDatePattern = /Invoice Date\s*:\s*(\d{2}\/\d{2}\/\d{4})/i;
   const mustekMatch = text.match(mustekDatePattern);
