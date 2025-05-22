@@ -59,10 +59,10 @@ const extractSupplierName = (text, fileName) => {
   console.error(text)
   console.log(text.toLowerCase().includes('icdl') ? 'ICDL' : 'NADA')
   
-  // if (text.toLowerCase().includes('icdl')) {
-  //   const matchedSupplier = supplierCodes.find(s => s.code === 'ICDLSA');
-  //   return matchedSupplier ? matchedSupplier.name : 'ICDL OF SOUTH AFRICA';
-  // }
+  if (text.toLowerCase().includes('icdl')) {
+    const matchedSupplier = supplierCodes.find(s => s.code === 'ICDLSA');
+    return matchedSupplier ? matchedSupplier.name : 'ICDL OF SOUTH AFRICA';
+  }
   
   // Check for Matzikama Municipality with regions
   const matzikamaRegions = {
@@ -113,7 +113,7 @@ const extractSupplierName = (text, fileName) => {
   // Check for patterns in supplierCodes
   for (const supplier of supplierCodes) {
     const regex = new RegExp(supplier.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
-    if (regex.test(text.toLowerCase())) {
+    if (regex.test(text)) {
       return supplier.name;
     }
   }
