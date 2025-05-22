@@ -85,7 +85,7 @@ const extractSupplierName = (text, fileName) => {
   
 
  // Check for Matzikama Municipality with regions
-const regions = {
+const matzikamaRegions = {
   'Bitterfontein': 'MATBIT',
   'Klawer': 'MATKLA',
   'RIETPOORT': 'MATRIE',
@@ -97,7 +97,7 @@ const regions = {
 // If text contains "Matzikama", check for specific regions
 if (text.toLowerCase().includes('matzikama')) {
   // First check if any specific region is mentioned
-  for (const [region, code] of Object.entries(regions)) {
+  for (const [region, code] of Object.entries(matzikamaRegions)) {
     if (text.toLowerCase().includes(region.toLowerCase())) {
       const matchedSupplier = supplierCodes.find(s => s.code === code);
       return matchedSupplier ? matchedSupplier.name : `Matzikama Municipality - ${region}`;
