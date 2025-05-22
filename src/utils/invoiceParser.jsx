@@ -93,7 +93,6 @@ const matzikamaRegions = {
   'Vredendal': 'MATVRE',
   'Doringbaai': 'MATZDO'  
 };
-  console.log(text)
 
 
 If text contains "Matzikama", check for specific regions
