@@ -136,7 +136,7 @@ export const extractInvoiceNumber = (text, supplierName) => {
     'Trust Patrol': /Tax\s+Invoice\s(\d{1,2}\/\d{1,2}\/\d{2,4})\s+([A-Z0-9-]+)/i,
     'Matzikama Municipality - Vanrhynsdorp': /BELASTING FAKTUUR NR\.\s*(\S+)/i,
     'ICDL OF SOUTH AFRICA':  /Tax\s+Invoice\s(\d{1,2}\/\d{1,2}\/\d{2,4})\s+([A-Z0-9-]+)/i,
-    'Fidelity ADT': /Document\s*([A-Z0-9]+)/i,
+    'Fidelity ADT': /Document?\s+([A-Z0-9]+)/i,
   };  
 
   // Use supplier-specific pattern if available, otherwise use default
