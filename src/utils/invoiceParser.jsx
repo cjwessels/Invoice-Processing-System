@@ -46,15 +46,11 @@ const extractSupplierName = (text, fileName) => {
       return { code: matchedSupplier.code, name: matchedSupplier.name };
     }
     
-    // if (text.toLowerCase().includes('WISPERNET') && text.toLowerCase().includes('MELKHOUTFONTEIN')) {
-    //   const matchedSupplier = supplierCodes.find(s => s.code === 'WISMEL');
-    //   return matchedSupplier ? matchedSupplier.name : 'Wispernet Melkhoutfontein';
-    // }
-   
     return null; // or return a default like { code: "", name: "" }
   }
   
   // Check for specific company names
+  //TRUSC
   if (text.toLowerCase().includes('2023/529949/07')) {
     const matchedSupplier = supplierCodes.find(s => s.code === 'TRUSC');
     return matchedSupplier ? matchedSupplier.name : 'Trusc Pty ltd';
@@ -117,7 +113,7 @@ const extractSupplierName = (text, fileName) => {
   // Check for patterns in supplierCodes
   for (const supplier of supplierCodes) {
     const regex = new RegExp(supplier.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
-    if (regex.test(text)) {
+    if (regex.test(text.toLowerCase())) {
       return supplier.name;
     }
   }
