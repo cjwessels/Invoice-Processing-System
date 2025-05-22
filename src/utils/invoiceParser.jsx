@@ -73,6 +73,14 @@ const extractSupplierName = (text, fileName) => {
     'Vredendal': 'MATVRE',
     'Doringbaai': 'MATZDO'  
   };
+  const wispernetRegions = {
+    'Bitterfontein': 'MATBIT',
+    'Klawer': 'MATKLA',
+    'RIETPOORT': 'MATRIE',
+    'Vanrhynsdorp': 'MATVAN',
+    'Vredendal': 'MATVRE',
+    'Doringbaai': 'MATZDO'  
+  };
 
   // If text contains "Matzikama", check for specific regions
   if (text.toLowerCase().includes('matzikama')) {
