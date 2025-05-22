@@ -137,7 +137,7 @@ export const extractInvoiceNumber = (text, supplierName) => {
     'Matzikama Municipality - Vanrhynsdorp': /BELASTING FAKTUUR NR\.\s*(\S+)/i,
     'ICDL OF SOUTH AFRICA':  /Tax\s+Invoice\s(\d{1,2}\/\d{1,2}\/\d{2,4})\s+([A-Z0-9-]+)/i,
     'Fidelity ADT': /Invoice Number:?\s+([A-Za-z0-9-]+)/i,
-    'The Computer Shop' : /Invoice#?\s*([A-Z0-9]+)/i,
+    'The Computer Shop' : /Invoice#\s*([A-Z0-9]+)/i,
   };  
 
   // Use supplier-specific pattern if available, otherwise use default
