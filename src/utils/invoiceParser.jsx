@@ -107,25 +107,7 @@ if (text.toLowerCase().includes('matzikama')) {
   };
 
     
-  const wispernetRegions = {
-  'Heidelberg': 'WISHEI',
-  'Melkhoutfontein': 'WISMEL',
-  'Dysselsdorp': 'WISP4',
-  'Internet Srvices': 'WISPEN',
-  'Bridgton': 'WISPER'
-};
-
-  
-
-  // If text contains "Wispernet", check for specific regions
-if (text.toLowerCase().includes('WISPERNET')) {
-  // First check if any specific region is mentioned
-  for (const [region, code] of Object.entries(wispernetRegions)) {
-    if (text.toLowerCase().includes(region.toLowerCase())) {
-      const matchedSupplier = supplierCodes.find(s => s.code === code);
-      return matchedSupplier ? matchedSupplier.name : `Wispernet - ${region}`;
-    }
-  }
+ 
 
 
   
