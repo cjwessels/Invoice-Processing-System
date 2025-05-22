@@ -61,11 +61,11 @@ const extractSupplierName = (text, fileName) => {
   }
 
   console.log(text)
-  console.log(text.toLowerCase().includes('ICDLof South Africa') ? 'ICDL' : 'NADA')
+  console.log(text.toLowerCase().includes('bank') ? 'ICDL' : 'NADA')
   
   if (text.toLowerCase().includes('ICDLof South Africa')) {
     const matchedSupplier = supplierCodes.find(s => s.code === 'ICDLSA');
-    return matchedSupplier ? matchedSupplier.name : 'ICDL of SA Bank';
+    return matchedSupplier ? matchedSupplier.name : 'ICDL OF SOUTH AFRICA';
   }
   
   // Check for Matzikama Municipality with regions
