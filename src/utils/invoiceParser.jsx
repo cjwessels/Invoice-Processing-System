@@ -56,7 +56,7 @@ const extractSupplierName = (text, fileName) => {
     return matchedSupplier ? matchedSupplier.name : 'Trusc Pty ltd';
   }
 
-  console.info(text)
+  console.warn(text)
   console.log(text.toLowerCase().includes('icdl') ? 'ICDL' : 'NADA')
   
   if (text.toLowerCase().includes('icdl')) {
