@@ -91,9 +91,9 @@ const matzikamaRegions = {
   'RIETPOORT': 'MATRIE',
   'Vanrhynsdorp': 'MATVAN',
   'Vredendal': 'MATVRE',
-  'Doringbaai': 'MATZDO'  
+  'Doringbaai': 'MATZDO'  ,
 };
-  console.log(text);
+  console.log(text)
 
 
 If text contains "Matzikama", check for specific regions
