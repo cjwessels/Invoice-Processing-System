@@ -139,7 +139,7 @@ if (text.toLowerCase().includes('WISPERNET')) {
       return supplier.name;
     }
   }
-console.log(text.toLowerCase().includes('WISPERNET') ? true : false)
+console.log(text.toLowerCase().includes('Matzikama') ? true : false)
   return 'Unknown Supplier';
 };
 // console.log(text)
