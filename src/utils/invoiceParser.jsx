@@ -63,7 +63,7 @@ const extractSupplierName = (text, fileName) => {
   console.log(text)
   console.log(text.toLowerCase().includes('icdl') ? 'ICDL' : 'NADA')
   
-  if (text.toLowerCase().includes('ICDLof South Africa')) {
+  if (text.toLowerCase().includes('icdl')) {
     const matchedSupplier = supplierCodes.find(s => s.code === 'ICDLSA');
     return matchedSupplier ? matchedSupplier.name : 'ICDL OF SOUTH AFRICA';
   }
