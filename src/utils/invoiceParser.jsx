@@ -77,7 +77,7 @@ const matzikamaRegions = {
 };
 
 
-If text contains "Matzikama", check for specific regions
+// Check for Matzikama regions
 if (text.toLowerCase().includes('matzikama')) {
   for (const [region, code] of Object.entries(matzikamaRegions)) {
     if (text.toLowerCase().includes(region.toLowerCase())) {
