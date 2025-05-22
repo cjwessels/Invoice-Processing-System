@@ -39,25 +39,25 @@ export const extractInvoiceData = (text, fileName) => {
 const extractSupplierName = (text, fileName) => {
 
   function findSupplierFromText(text) {
-    const matchedSupplier = supplierCodes.find(supplier =>
-      text.includes(supplier.name)
-    );
+  const matchedSupplier = supplierCodes.find(supplier =>
+    text.includes(supplier.name)
+  );
 
-    if (matchedSupplier) {
-      return { code: matchedSupplier.code, name: matchedSupplier.name };
-    }
-    // if (text.includes('headoff@matzikama.gov.za') && 
-    //   text.toLowerCase().includes('vredendal')) {
-    //   const matchedSupplier = supplierCodes.find(s => s.code === 'MATVRE');
-    //   return matchedSupplier ? matchedSupplier.name : 'Matzikama Municipality - Vredendal';
-    // }
-    if (text.toLowerCase().includes('WISPERNET') && text.toLowerCase().includes('MELKHOUTFONTEIN')) {
-      const matchedSupplier = supplierCodes.find(s => s.code === 'WISMEL');
-      return matchedSupplier ? matchedSupplier.name : 'Wispernet Melkhoutfontein';
-    }
-   
-    return null; // or return a default like { code: "", name: "" }
+  if (matchedSupplier) {
+    return { code: matchedSupplier.code, name: matchedSupplier.name };
   }
+  // if (text.includes('headoff@matzikama.gov.za') && 
+  //   text.toLowerCase().includes('vredendal')) {
+  //   const matchedSupplier = supplierCodes.find(s => s.code === 'MATVRE');
+  //   return matchedSupplier ? matchedSupplier.name : 'Matzikama Municipality - Vredendal';
+  // }
+  if (text.toLowerCase().includes('WISPERNET') && text.toLowerCase().includes('MELKHOUTFONTEIN')) {
+    const matchedSupplier = supplierCodes.find(s => s.code === 'WISMEL');
+    return matchedSupplier ? matchedSupplier.name : 'Wispernet Melkhoutfontein';
+  }
+ 
+  return null; // or return a default like { code: "", name: "" }
+}
   
   // Check for specific company names
   if (text.toLowerCase().includes('2023/529949/07')) {
@@ -66,33 +66,33 @@ const extractSupplierName = (text, fileName) => {
   }
   
 
-  // Check for Matzikama Municipality with regions
-  const matzikamaRegions = {
-    'Bitterfontein': 'MATBIT',
-    'Klawer': 'MATKLA',
-    'RIETPOORT': 'MATRIE',
-    'Vanrhynsdorp': 'MATVAN',
-    'Vredendal': 'MATVRE',
-    'Doringbaai': 'MATZDO'  
-  };
+ // Check for Matzikama Municipality with regions
+const matzikamaRegions = {
+  'Bitterfontein': 'MATBIT',
+  'Klawer': 'MATKLA',
+  'RIETPOORT': 'MATRIE',
+  'Vanrhynsdorp': 'MATVAN',
+  'Vredendal': 'MATVRE',
+  'Doringbaai': 'MATZDO'  
+};
 
 
-  // Check for Matzikama regions
-  if (text.toLowerCase().includes('matzikama')) {
-    for (const [region, code] of Object.entries(matzikamaRegions)) {
-      if (text.toLowerCase().includes(region.toLowerCase())) {
-        const matchedSupplier = supplierCodes.find(s => s.code === code);
-        return matchedSupplier ? matchedSupplier.name : `Matzikama Municipality - ${region}`;
-      }
-    }  
-  }
+If text contains "Matzikama", check for specific regions
+if (text.toLowerCase().includes('matzikama')) {
+  for (const [region, code] of Object.entries(matzikamaRegions)) {
+    if (text.toLowerCase().includes(region.toLowerCase())) {
+      const matchedSupplier = supplierCodes.find(s => s.code === code);
+      return matchedSupplier ? matchedSupplier.name : `Matzikama Municipality - ${region}`;
+    }
+  };  
+}
 
 
   
   // If we get here, no specific region was found, so return generic Matzikama
   const matchedSupplier = supplierCodes.find(s => s.code === 'MATZI');
   return matchedSupplier ? matchedSupplier.name : 'Matzikama Municipality';
-
+}
   console.log('IM HERE AGAIN')
 
   // Check for patterns in supplierCodes
@@ -129,9 +129,9 @@ export const extractInvoiceNumber = (text, supplierName) => {
   // return match ? match[1] : 'Unknown';
   
   // return match ? (supplierName === 'Trust Patrol' ? match[2] : match[1]) : 'Unknown';
-  if (!match) return 'Unknown';
-  if (supplierName === 'Trust Patrol') return match[2];
-  return match[1];
+if (!match) return 'Unknown';
+if (supplierName === 'Trust Patrol') return match[2];
+return match[1];
 };
 
 // Extract invoice date from text
@@ -154,13 +154,13 @@ export const extractInvoiceDate = (text) => {
     return mustekMatch[1];
   }
 
-  const datePatterns = [
+const datePatterns = [
     /Invoice Date:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
     /Date:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
     /DATE OF ACCOUNT:?\s*(\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4})/i,
     /Invoice Date\s*:\s*(\d{2}\/\d{2}\/\d{4})/i,
     /\b(\d{4}\/\d{2}\/\d{2})\b/g,
-    /Tax\s+Invoice\s(\d{1,2}\/\d{1,2}\/\d{2,4})\s+([A-Z0-9-]+)/i,
+  /Tax\s+Invoice\s(\d{1,2}\/\d{1,2}\/\d{2,4})\s+([A-Z0-9-]+)/i,
   ];
 
   for (const pattern of datePatterns) {
