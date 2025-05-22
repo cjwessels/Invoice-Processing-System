@@ -56,13 +56,13 @@ const extractSupplierName = (text, fileName) => {
     return matchedSupplier ? matchedSupplier.name : 'Trusc Pty ltd';
   }
 
-  console.log(text)
+  console.error(text)
   console.log(text.toLowerCase().includes('icdl') ? 'ICDL' : 'NADA')
   
-  if (text.toLowerCase().includes('icdl')) {
-    const matchedSupplier = supplierCodes.find(s => s.code === 'ICDLSA');
-    return matchedSupplier ? matchedSupplier.name : 'ICDL OF SOUTH AFRICA';
-  }
+  // if (text.toLowerCase().includes('icdl')) {
+  //   const matchedSupplier = supplierCodes.find(s => s.code === 'ICDLSA');
+  //   return matchedSupplier ? matchedSupplier.name : 'ICDL OF SOUTH AFRICA';
+  // }
   
   // Check for Matzikama Municipality with regions
   const matzikamaRegions = {
