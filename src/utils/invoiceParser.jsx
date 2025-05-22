@@ -56,7 +56,7 @@ const extractSupplierName = (text, fileName) => {
     return matchedSupplier ? matchedSupplier.name : 'Trusc Pty ltd';
   }
 
-  console.warn(`%c${text}` , "color: white;font-size: 2rem; font-style: italic; background-color: teal;padding: 2px",)
+  console.warn(`%c${text}` , "color: white;font-size: 1.3rem; font-style: italic; background-color: teal;padding: 2px",)
   console.log(text.toLowerCase().includes('icdl') ? 'ICDL' : 'NADA')
   
   if (text.toLowerCase().includes('icdl')) {
