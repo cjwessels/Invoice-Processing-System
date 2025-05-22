@@ -59,6 +59,8 @@ const extractSupplierName = (text, fileName) => {
     const matchedSupplier = supplierCodes.find(s => s.code === 'TRUSC');
     return matchedSupplier ? matchedSupplier.name : 'Trusc Pty ltd';
   }
+
+  console.log(text)
   
   if (text.toLowerCase().includes('ICDL')) {
     const matchedSupplier = supplierCodes.find(s => s.code === 'ICDLSA');
