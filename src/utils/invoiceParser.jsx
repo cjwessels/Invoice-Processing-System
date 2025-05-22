@@ -93,6 +93,8 @@ const matzikamaRegions = {
   'Vredendal': 'MATVRE',
   'Doringbaai': 'MATZDO'  
 };
+  console.log(text)
+console.log(text.toLowerCase().includes('Matzikama') ? true : false)
 
 // If text contains "Matzikama", check for specific regions
 if (text.toLowerCase().includes('matzikama')) {
@@ -139,8 +141,7 @@ if (text.toLowerCase().includes('WISPERNET')) {
       return supplier.name;
     }
   }
-  console.log(text)
-console.log(text.toLowerCase().includes('Matzikama') ? true : false)
+  
   return 'Unknown Supplier';
 };
 // console.log(text)
