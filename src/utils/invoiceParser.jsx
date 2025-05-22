@@ -55,13 +55,7 @@ const extractSupplierName = (text, fileName) => {
     const matchedSupplier = supplierCodes.find(s => s.code === 'WISMEL');
     return matchedSupplier ? matchedSupplier.name : 'Wispernet Melkhoutfontein';
   }
-
-  // if (text.includes('Bridoon Trade and Invest 197')) {
-  //   const matchedSupplier = supplierCodes.find(s => s.code === 'NAS001');
-  //   return matchedSupplier ? matchedSupplier.name : 'Nashua Cape Town';
-  // }
-
-  
+ 
   return null; // or return a default like { code: "", name: "" }
 }
   
@@ -70,18 +64,6 @@ const extractSupplierName = (text, fileName) => {
     const matchedSupplier = supplierCodes.find(s => s.code === 'TRUSC');
     return matchedSupplier ? matchedSupplier.name : 'Trusc Pty ltd';
   }
-
-  
-  // if (text.includes('Mustek Limited')) {
-  //   const matchedSupplier = supplierCodes.find(s => s.code === 'MUS001');
-  //   return matchedSupplier ? matchedSupplier.name : 'Mustek Limited';
-  // }
-
-  // if (text.includes('Theewaterskloof')) {
-  //   const matchedSupplier = supplierCodes.find(s => s.code === 'THEE01');
-  //   return matchedSupplier ? matchedSupplier.name : 'Theewaterskloof Municipality';
-  // }
-
   
 
  // Check for Matzikama Municipality with regions
