@@ -91,7 +91,7 @@ const matzikamaRegions = {
   'RIETPOORT': 'MATRIE',
   'Vanrhynsdorp': 'MATVAN',
   'Vredendal': 'MATVRE',
-  'Doringbaai': 'MATZDO'  ,
+  'Doringbaai': 'MATZDO'  
 };
   console.log(text)
 
@@ -113,7 +113,7 @@ if (text.toLowerCase().includes('matzikama')) {
   'Melkhoutfontein': 'WISMEL',
   'Dysselsdorp': 'WISP4',
   'Internet Srvices': 'WISPEN',
-  'Bridgton': 'WISPER',
+  'Bridgton': 'WISPER'
 };
 
   
