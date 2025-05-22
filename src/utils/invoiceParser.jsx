@@ -122,6 +122,7 @@ if (text.toLowerCase().includes('WISPERNET')) {
       return matchedSupplier ? matchedSupplier.name : `Wispernet - ${region}`;
     }
   }
+}
 
   
   // If we get here, no specific region was found, so return generic Matzikama
