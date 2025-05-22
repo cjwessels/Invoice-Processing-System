@@ -94,10 +94,11 @@ const matzikamaRegions = {
   'Doringbaai': 'MATZDO'  
 };
   console.log(text)
-console.log(text.toLowerCase().includes('Matzikama') ? true : false)
+
 
 // If text contains "Matzikama", check for specific regions
 if (text.toLowerCase().includes('matzikama')) {
+  console.log(text.toLowerCase().includes('Matzikama') ? true : false)
   // First check if any specific region is mentioned
   for (const [region, code] of Object.entries(matzikamaRegions)) {
     if (text.toLowerCase().includes(region.toLowerCase())) {
