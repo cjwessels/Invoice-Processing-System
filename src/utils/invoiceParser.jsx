@@ -113,7 +113,7 @@ if (text.toLowerCase().includes('matzikama')) {
   'Bridgton': 'WISPER',
 };
 
-  console.log(text.toLowerCase().includes('WISPERNET') ? true : false)
+  
 
   // If text contains "Wispernet", check for specific regions
 if (text.toLowerCase().includes('WISPERNET')) {
@@ -139,7 +139,7 @@ if (text.toLowerCase().includes('WISPERNET')) {
       return supplier.name;
     }
   }
-
+console.log(text.toLowerCase().includes('WISPERNET') ? true : false)
   return 'Unknown Supplier';
 };
 // console.log(text)
