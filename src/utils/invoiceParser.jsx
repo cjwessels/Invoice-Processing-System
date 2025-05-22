@@ -46,10 +46,10 @@ const extractSupplierName = (text, fileName) => {
       return { code: matchedSupplier.code, name: matchedSupplier.name };
     }
     
-    if (text.toLowerCase().includes('WISPERNET') && text.toLowerCase().includes('MELKHOUTFONTEIN')) {
-      const matchedSupplier = supplierCodes.find(s => s.code === 'WISMEL');
-      return matchedSupplier ? matchedSupplier.name : 'Wispernet Melkhoutfontein';
-    }
+    // if (text.toLowerCase().includes('WISPERNET') && text.toLowerCase().includes('MELKHOUTFONTEIN')) {
+    //   const matchedSupplier = supplierCodes.find(s => s.code === 'WISMEL');
+    //   return matchedSupplier ? matchedSupplier.name : 'Wispernet Melkhoutfontein';
+    // }
    
     return null; // or return a default like { code: "", name: "" }
   }
@@ -58,6 +58,11 @@ const extractSupplierName = (text, fileName) => {
   if (text.toLowerCase().includes('2023/529949/07')) {
     const matchedSupplier = supplierCodes.find(s => s.code === 'TRUSC');
     return matchedSupplier ? matchedSupplier.name : 'Trusc Pty ltd';
+  }
+  
+  if (text.toLowerCase().includes('ICDL')) {
+    const matchedSupplier = supplierCodes.find(s => s.code === 'ICDLSA');
+    return matchedSupplier ? matchedSupplier.name : 'ICDL OF SOUTH AFRICA';
   }
   
   // Check for Matzikama Municipality with regions
