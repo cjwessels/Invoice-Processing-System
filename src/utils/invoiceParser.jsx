@@ -150,6 +150,7 @@ export const extractInvoiceNumber = (text, supplierName) => {
     'The Computer Shop' : /Invoice#\s*([A-Z0-9]+)/i,
     'Simple Pay' : /Invoice:\s*([A-Z0-9]+)/i,
     'George Municipality' : /Invoice Number:\s*([A-Z0-9]+)/i,
+    'CAPE AGULHAS MUNICIPALITY' : /\b(\d{2}\/\d{2}\/\d{4})\b/i
   };  
 
   // Use supplier-specific pattern if available, otherwise use default
@@ -167,7 +168,7 @@ export const extractInvoiceDate = (text) => {
   
   const matzikamaDates = text.match(/\b(\d{2}\/\d{2}\/\d{4})\b/g);
   if (matzikamaDates && matzikamaDates.length > 0) {
-    console.log(matzikamaDates[0])
+    
     return matzikamaDates[0];
   }
 
