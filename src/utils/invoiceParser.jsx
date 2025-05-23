@@ -115,9 +115,7 @@ const extractSupplierName = (text, fileName) => {
    // If text contains "Simple Pay", check for specific regions
   if (text.toLowerCase().includes('orange thunder technologies')) {
    
-    // { code: 'SIMPL', name: 'Simple Pay' },
-    
-    // If we get here, no specific region was found, so return generic Matzikama
+    // { code: 'SIMPL', name: 'Simple Pay' },    
     const matchedSupplier = supplierCodes.find(s => s.code === 'SIMPL');
     return matchedSupplier ? matchedSupplier.name : 'Simple Pay';
   }
