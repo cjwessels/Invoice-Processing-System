@@ -124,7 +124,7 @@ const extractSupplierName = (text, fileName) => {
     // { code: 'SIMPL', name: 'Simple Pay' },
     
     // If we get here, no specific region was found, so return generic Matzikama
-    const matchedSupplier = supplierCodes.find(s => s.code === 'MATZI');
+    const matchedSupplier = supplierCodes.find(s => s.code === 'SIMPL');
     return matchedSupplier ? matchedSupplier.name : 'Simple Pay';
   }
 
