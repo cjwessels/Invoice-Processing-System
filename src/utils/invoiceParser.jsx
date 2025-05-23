@@ -112,7 +112,21 @@ const extractSupplierName = (text, fileName) => {
   }
   
 
-   
+   // If text contains "Simple Pay", check for specific regions
+  if (text.toLowerCase().includes('orange thunder technologies')) {
+    for (const [region, code] of Object.entries(wispernetRegions)) {
+      if (text.toLowerCase().includes(region.toLowerCase())) {
+        const matchedSupplier = supplierCodes.find(s => s.code === code);
+        return matchedSupplier ? matchedSupplier.name : `Wispernet ${region}`;
+      }
+    }
+
+    { code: 'SIMPL', name: 'Simple Pay' },
+    
+    // If we get here, no specific region was found, so return generic Matzikama
+    const matchedSupplier = supplierCodes.find(s => s.code === 'MATZI');
+    return matchedSupplier ? matchedSupplier.name : 'Matzikama Municipality';
+  }
 
   
   // Check for patterns in supplierCodes
