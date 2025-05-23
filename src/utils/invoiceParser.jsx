@@ -160,6 +160,7 @@ export const extractInvoiceNumber = (text, supplierName) => {
   if (!match) return 'Unknown';
   if (supplierName === 'Trust Patrol') return match[2];
   if (supplierName === 'ICDL OF SOUTH AFRICA') return match[2];
+  if (supplierName === 'CAPE AGULHAS MUNICIPALITY') return match[2];
   return match[1];
 };
 
