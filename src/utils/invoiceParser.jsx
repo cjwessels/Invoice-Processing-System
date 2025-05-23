@@ -144,7 +144,7 @@ export const extractInvoiceNumber = (text, supplierName) => {
     'Trusc Pty ltd': /Inv No.?\s*([A-Z0-9]+)/i,
     'Nashua Cape Town': /020866 DIR\s*([A-Z0-9-]+)/i,
     'Trust Patrol': /Tax\s+Invoice\s(\d{1,2}\/\d{1,2}\/\d{2,4})\s+([A-Z0-9-]+)/i,
-    'Matzikama Municipality - Vanrhynsdorp'||'Matzikama Municipality - Vredendal' : /BELASTING FAKTUUR NR\.\s*(\S+)/i,
+    {'Matzikama Municipality - Vanrhynsdorp'||'Matzikama Municipality - Vredendal'} : /BELASTING FAKTUUR NR\.\s*(\S+)/i,
     'ICDL OF SOUTH AFRICA':  /Tax\s+Invoice\s(\d{1,2}\/\d{1,2}\/\d{2,4})\s+([A-Z0-9-]+)/i,
     'Fidelity ADT': /Invoice Number:?\s+([A-Za-z0-9-]+)/i,
     'The Computer Shop' : /Invoice#\s*([A-Z0-9]+)/i,
