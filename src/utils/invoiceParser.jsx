@@ -120,6 +120,8 @@ const extractSupplierName = (text, fileName) => {
         return matchedSupplier ? matchedSupplier.name : `Wispernet ${region}`;
       }
     }
+
+    { code: 'SIMPL', name: 'Simple Pay' },
     
     // If we get here, no specific region was found, so return generic Matzikama
     const matchedSupplier = supplierCodes.find(s => s.code === 'MATZI');
