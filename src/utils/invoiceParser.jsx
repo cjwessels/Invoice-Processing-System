@@ -116,9 +116,10 @@ const extractSupplierName = (text, fileName) => {
     for (const [region, code] of Object.entries(wispernetRegions)) {
       if (text.toLowerCase().includes(region.toLowerCase())) {
         const matchedSupplier = supplierCodes.find(s => s.code === code);
-        return matchedSupplier ? matchedSupplier.name : `Wispernet ${region}`;
+        return matchedSupplier ? matchedSupplier.name : `Simple Pay ${region}`;
       }
     }
+    'SIMPL', name: 'Simple Pay'
     
     // If we get here, no specific region was found, so return generic Matzikama
     const matchedSupplier = supplierCodes.find(s => s.code === 'MATZI');
