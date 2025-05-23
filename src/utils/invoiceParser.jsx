@@ -112,7 +112,7 @@ const extractSupplierName = (text, fileName) => {
   }
   
   // If text contains "Wispernet", check for specific regions
-  if (text.toLowerCase().includes('Orange Thunder Technologies (Pty) Ltd')) {
+  if (text.toLowerCase().includes('orange thunder technologies')) {
     for (const [region, code] of Object.entries(wispernetRegions)) {
       if (text.toLowerCase().includes(region.toLowerCase())) {
         const matchedSupplier = supplierCodes.find(s => s.code === code);
