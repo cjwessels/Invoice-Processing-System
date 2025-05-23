@@ -150,6 +150,7 @@ export const extractInvoiceNumber = (text, supplierName) => {
     'Fidelity ADT': /Invoice Number:?\s+([A-Za-z0-9-]+)/i,
     'The Computer Shop' : /Invoice#\s*([A-Z0-9]+)/i,
     'Simple Pay' : /Invoice:\s*([A-Z0-9]+)/i,
+    'George Municipality' : /Invoice Date:\s*([A-Z0-9]+)/i,
   };  
 
   // Use supplier-specific pattern if available, otherwise use default
