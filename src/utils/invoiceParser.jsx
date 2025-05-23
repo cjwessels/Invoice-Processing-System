@@ -105,7 +105,7 @@ const extractSupplierName = (text, fileName) => {
       }
     }
     
-    // If we get here, no specific region was found, so return generic Matzikama
+    // If we get here, no specific region was found, so return generic Wispernet Internet Srvices
     const matchedSupplier = supplierCodes.find(s => s.code === 'WISPEN');
     return matchedSupplier ? matchedSupplier.name : 'Wispernet Internet Srvices';
   }
