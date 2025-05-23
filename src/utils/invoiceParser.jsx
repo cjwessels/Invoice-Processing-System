@@ -127,7 +127,7 @@ const extractSupplierName = (text, fileName) => {
     const matchedSupplier = supplierCodes.find(s => s.code === 'MATZI');
     return matchedSupplier ? matchedSupplier.name : 'Matzikama Municipality';
   }
-
+}
   
   // Check for patterns in supplierCodes
   for (const supplier of supplierCodes) {
