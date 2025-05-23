@@ -164,8 +164,10 @@ export const extractInvoiceNumber = (text, supplierName) => {
 
 // Extract invoice date from text
 export const extractInvoiceDate = (text) => {
+  
   const matzikamaDates = text.match(/\b(\d{2}\/\d{2}\/\d{4})\b/g);
   if (matzikamaDates && matzikamaDates.length > 0) {
+    console.log(matzikamaDates[0])
     return matzikamaDates[0];
   }
 
