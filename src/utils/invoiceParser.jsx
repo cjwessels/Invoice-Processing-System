@@ -193,7 +193,7 @@ export const extractInvoiceDate = (text) => {
 
   for (const pattern of datePatterns) {
     const match = text.match(pattern);
-    console.log(pattern)
+    console.log(match)
     if (match && match[1]) {
       return match[1];
     }
