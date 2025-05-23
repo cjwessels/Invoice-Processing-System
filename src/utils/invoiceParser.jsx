@@ -121,13 +121,13 @@ const extractSupplierName = (text, fileName) => {
       }
     }
 
-    { code: 'SIMPL', name: 'Simple Pay' },
+    //{ code: 'SIMPL', name: 'Simple Pay' },
     
     // If we get here, no specific region was found, so return generic Matzikama
     const matchedSupplier = supplierCodes.find(s => s.code === 'MATZI');
     return matchedSupplier ? matchedSupplier.name : 'Matzikama Municipality';
   }
-}
+
   
   // Check for patterns in supplierCodes
   for (const supplier of supplierCodes) {
