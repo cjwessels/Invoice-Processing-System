@@ -135,6 +135,8 @@ const extractSupplierName = (text, fileName) => {
 export const extractInvoiceNumber = (text, supplierName) => {
   // Default pattern for invoice numbers
   const defaultPattern = /(?:Invoice|INV|Inv No.|Reference|Docuemnt No)[\s#:]*([A-Z0-9-]+)/i;
+
+  const invoiceNumberPatterns = []
   
   // Supplier-specific patterns
   const patterns = {
@@ -147,7 +149,7 @@ export const extractInvoiceNumber = (text, supplierName) => {
     'Matzikama Municipality - Vanrhynsdorp': /BELASTING FAKTUUR NR\.\s*(\S+)/i,
     'Matzikama Municipality - Vredendal': /BELASTING FAKTUUR NR\.\s*(\S+)/i,
     'Matzikama Municipality - RIETPOORT': /TAX INVOICE NO\.\s*(\S+)/i,
-    'Matzikama Municipality - Klawer': /BELASTING FAKTUUR NR\.\s*(\S+)/i,
+    'Matzikama municipality - Klawer': /BELASTING FAKTUUR NR\.\s*(\S+)/i,
     'ICDL OF SOUTH AFRICA':  /Tax\s+Invoice\s(\d{1,2}\/\d{1,2}\/\d{2,4})\s+([A-Z0-9-]+)/i,
     'Fidelity ADT': /Invoice Number:?\s+([A-Za-z0-9-]+)/i,
     'The Computer Shop' : /Invoice#\s*([A-Z0-9]+)/i,
