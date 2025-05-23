@@ -57,7 +57,6 @@ const extractSupplierName = (text, fileName) => {
   }
 
   console.warn(`%c${text}` , "color: white;font-size: 1.3rem; font-style: italic; background-color: teal;padding: 2px",)
-  console.log(text.toLowerCase().includes('icdl') ? 'ICDL' : 'NADA')
   
   if (text.toLowerCase().includes('icdl')) {
     const matchedSupplier = supplierCodes.find(s => s.code === 'ICDLSA');
