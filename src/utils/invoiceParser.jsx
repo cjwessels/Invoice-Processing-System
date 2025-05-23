@@ -111,7 +111,7 @@ const extractSupplierName = (text, fileName) => {
     return matchedSupplier ? matchedSupplier.name : 'Matzikama Municipality';
   }
   
-  // If text contains "Wispernet", check for specific regions
+  // If text contains "Simple Pay", check for specific regions
   if (text.toLowerCase().includes('orange thunder technologies')) {
     for (const [region, code] of Object.entries(wispernetRegions)) {
       if (text.toLowerCase().includes(region.toLowerCase())) {
