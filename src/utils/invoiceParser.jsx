@@ -125,7 +125,7 @@ const extractSupplierName = (text, fileName) => {
     
     // If we get here, no specific region was found, so return generic Matzikama
     const matchedSupplier = supplierCodes.find(s => s.code === 'MATZI');
-    return matchedSupplier ? matchedSupplier.name : 'Matzikama Municipality';
+    return matchedSupplier ? matchedSupplier.name : 'Simple Pay';
   }
 
   
