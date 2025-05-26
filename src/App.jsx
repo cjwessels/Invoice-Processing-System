@@ -9,7 +9,6 @@ import {
   Alert,
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { format, parse, isValid } from 'date-fns';
 import FileUploadComponent from './components/FileUploadComponent';
 import { processInvoices } from './services/ocrService';
 
@@ -44,39 +43,11 @@ function App() {
     createUploadsDir();
   }, []);
 
-  const formatInvoiceDate = (params) => {
-    if (!params.value) return '';
-    
-    // Try different date formats
-    const dateFormats = [
-      'dd/MM/yyyy',
-      'MM/dd/yyyy',
-      'yyyy/MM/dd',
-      'dd-MM-yyyy',
-      'yyyy-MM-dd'
-    ];
-
-    for (const format of dateFormats) {
-      const parsedDate = parse(params.value, format, new Date());
-      if (isValid(parsedDate)) {
-        return format(parsedDate, 'yyyy-MMMM-dd');
-      }
-    }
-
-    return params.value;
-  };
-
   const columns = [
     { field: 'fileName', headerName: 'File Name', flex: 1, editable: true },
     { field: 'supplierName', headerName: 'Supplier Name', flex: 1, editable: true },
     { field: 'supplierCode', headerName: 'Supplier Code', flex: 1, editable: true },
-    { 
-      field: 'invoiceDate', 
-      headerName: 'Invoice Date', 
-      flex: 1, 
-      editable: true,
-      valueFormatter: formatInvoiceDate
-    },
+    { field: 'invoiceDate', headerName: 'Invoice Date', flex: 1, editable: true },
     { field: 'invoiceNumber', headerName: 'Invoice Number', flex: 1, editable: true }
   ];
 
@@ -150,7 +121,7 @@ function App() {
           body: JSON.stringify({
             sourcePath: `${sourcePath}\\${item.fileName}`,
             targetPath: `${processedPath}\\${newFileName}`,
-            useCopyMethod: true,
+            useCopyMethod: true, // Signal to use copy-then-delete approach
           }),
         });
 
