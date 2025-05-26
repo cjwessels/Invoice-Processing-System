@@ -1,4 +1,4 @@
-export function dateConverter(dateString) {
+export async function dateConverter(dateString) {
     // Remove extra whitespace and normalize
     const cleaned = dateString.trim();
     
@@ -75,18 +75,18 @@ export function dateConverter(dateString) {
     }
     
     else {
-        throw new Error(`Unrecognized date format: ${dateString}`);
+        return dateString; // Return original if format not recognized
     }
     
     // Validate the parsed date
     if (month < 0 || month > 11 || day < 1 || day > 31 || year < 1900) {
-        throw new Error(`Invalid date values: ${dateString}`);
+        return dateString; // Return original if invalid values
     }
     
     // Create date object and validate it exists
     const date = new Date(year, month, day);
     if (date.getFullYear() !== year || date.getMonth() !== month || date.getDate() !== day) {
-        throw new Error(`Invalid date: ${dateString}`);
+        return dateString; // Return original if invalid date
     }
     
     // Format as dd-MMMM-yyyy
@@ -97,7 +97,7 @@ export function dateConverter(dateString) {
     return `${formattedDay}-${formattedMonth}-${formattedYear}`;
 }
 
-// Test with your examples
+// Test with your examples - now using async/await
 const testDates = [
     '04/03/2025',
     '2025/03/20', 
@@ -105,18 +105,21 @@ const testDates = [
     '1 Mar 2025',
     '2025-03-25',
     '01-03-2025',
-    '26 03 2025'
+    '26 03 2025',
+    'invalid format',
+    '99/99/9999'
 ];
 
-console.log('Testing date conversions:');
-testDates.forEach(dateStr => {
-    try {
-        const converted = convertDateToStandardFormat(dateStr);
+async function runTests() {
+    console.log('Testing date conversions:');
+    for (const dateStr of testDates) {
+        const converted = await convertDateToStandardFormat(dateStr);
         console.log(`${dateStr} → ${converted}`);
-    } catch (error) {
-        console.log(`${dateStr} → ERROR: ${error.message}`);
     }
-});
+}
+
+// Run tests
+runTests();
 
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
