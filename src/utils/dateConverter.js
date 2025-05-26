@@ -1,4 +1,4 @@
-export  function dateConverter(dateString) {
+export async function dateConverter(dateString) {
     // Remove extra whitespace and normalize
     const cleaned = dateString.trim();
     
@@ -18,11 +18,26 @@ export  function dateConverter(dateString) {
     // Pattern 1: MM/dd/yyyy or dd/MM/yyyy (04/03/2025)
     if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(cleaned)) {
         const [first, second, yearPart] = cleaned.split('/');
-        // Assuming MM/dd/yyyy format (US format)
-        // If you need dd/MM/yyyy, swap the assignments below
-        month = parseInt(first) - 1;
-        day = parseInt(second);
+        const firstNum = parseInt(first);
+        const secondNum = parseInt(second);
         year = parseInt(yearPart);
+        
+        // Smart detection: if first number > 12, it must be day (dd/MM/yyyy)
+        // if second number > 12, it must be day (MM/dd/yyyy)
+        if (firstNum > 12) {
+            // dd/MM/yyyy format
+            day = firstNum;
+            month = secondNum - 1;
+        } else if (secondNum > 12) {
+            // MM/dd/yyyy format
+            month = firstNum - 1;
+            day = secondNum;
+        } else {
+            // Ambiguous case (both <= 12), assume dd/MM/yyyy (European format)
+            // Change this to MM/dd/yyyy if you prefer US format as default
+            day = firstNum;
+            month = secondNum - 1;
+        }
     }
     
     // Pattern 2: yyyy/MM/dd (2025/03/20)
