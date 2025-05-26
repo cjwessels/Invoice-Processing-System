@@ -215,7 +215,7 @@ export const extractInvoiceDate = (text) => {
 export const extractDueDate = (text) => {
   const datePattern = /(?:Due Date|Payment Due):\s*(\d{1,2}[-/]\d{1,2}[-/]\d{2,4})/i;
   const match = text.match(datePattern);
-  return match ? parseDate(match[1]) : null;
+  return match ? dateConverter(match[1]) : null;
 };
 
 // Extract totals from text
