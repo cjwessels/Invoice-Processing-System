@@ -1,4 +1,4 @@
-export async function dateConverter(dateString) {
+export  function dateConverter(dateString) {
     // Remove extra whitespace and normalize
     const cleaned = dateString.trim();
     
