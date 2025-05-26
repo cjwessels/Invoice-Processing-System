@@ -45,7 +45,7 @@ function App() {
   }, []);
 
   const formatInvoiceDate = (value) => {
-    if (!value) return '';
+    if (!value || value === 'Unknown') return value;
     
     // Try different date formats
     const dateFormats = [
@@ -53,13 +53,18 @@ function App() {
       'MM/dd/yyyy',
       'yyyy/MM/dd',
       'dd-MM-yyyy',
-      'yyyy-MM-dd'
+      'yyyy-MM-dd',
+      'dd MM yyyy'
     ];
 
     for (const dateFormat of dateFormats) {
-      const parsedDate = parse(value, dateFormat, new Date());
-      if (isValid(parsedDate)) {
-        return format(parsedDate, 'yyyy-MMMM-dd');
+      try {
+        const parsedDate = parse(value.toString(), dateFormat, new Date());
+        if (isValid(parsedDate)) {
+          return format(parsedDate, 'yyyy-MMMM-dd');
+        }
+      } catch (error) {
+        continue;
       }
     }
 
