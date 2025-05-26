@@ -75,8 +75,11 @@ function App() {
       headerName: 'Invoice Date', 
       flex: 1, 
       editable: true,
-      valueGetter: (params) => params.value,
-      valueFormatter: (params) => formatInvoiceDate(params.value)
+      valueGetter: (params) => params?.value ?? '',
+      valueFormatter: (params) => {
+        if (!params?.value) return '';
+        return formatInvoiceDate(params.value);
+      }
     },
     { field: 'invoiceNumber', headerName: 'Invoice Number', flex: 1, editable: true }
   ];
