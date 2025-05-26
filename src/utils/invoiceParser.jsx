@@ -204,7 +204,7 @@ export const extractInvoiceDate = (text) => {
   for (const pattern of datePatterns) {
     const match = text.match(pattern);    
     if (match && match[1]) {
-      return match[1];
+      return dateConverter(match[1]);
     }
   }
   
