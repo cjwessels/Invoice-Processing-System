@@ -113,7 +113,7 @@ const testDates = [
 async function runTests() {
     console.log('Testing date conversions:');
     for (const dateStr of testDates) {
-        const converted = await convertDateToStandardFormat(dateStr);
+        const converted = await dateConverter(dateStr);
         console.log(`${dateStr} → ${converted}`);
     }
 }
@@ -123,5 +123,5 @@ runTests();
 
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = convertDateToStandardFormat;
+    module.exports = dateConverter;
 }
