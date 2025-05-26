@@ -44,8 +44,8 @@ function App() {
     createUploadsDir();
   }, []);
 
-  const formatInvoiceDate = (value) => {
-    if (!value || value === 'Unknown') return value;
+  const formatInvoiceDate = (params) => {
+    if (!params.value) return '';
     
     // Try different date formats
     const dateFormats = [
@@ -53,22 +53,17 @@ function App() {
       'MM/dd/yyyy',
       'yyyy/MM/dd',
       'dd-MM-yyyy',
-      'yyyy-MM-dd',
-      'dd MM yyyy'
+      'yyyy-MM-dd'
     ];
 
-    for (const dateFormat of dateFormats) {
-      try {
-        const parsedDate = parse(value.toString(), dateFormat, new Date());
-        if (isValid(parsedDate)) {
-          return format(parsedDate, 'yyyy-MMMM-dd');
-        }
-      } catch (error) {
-        continue;
+    for (const format of dateFormats) {
+      const parsedDate = parse(params.value, format, new Date());
+      if (isValid(parsedDate)) {
+        return format(parsedDate, 'yyyy-MMMM-dd');
       }
     }
 
-    return value;
+    return params.value;
   };
 
   const columns = [
@@ -80,11 +75,7 @@ function App() {
       headerName: 'Invoice Date', 
       flex: 1, 
       editable: true,
-      valueGetter: (params) => params?.value ?? '',
-      valueFormatter: (params) => {
-        if (!params?.value) return '';
-        return formatInvoiceDate(params.value);
-      }
+      valueFormatter: formatInvoiceDate
     },
     { field: 'invoiceNumber', headerName: 'Invoice Number', flex: 1, editable: true }
   ];
