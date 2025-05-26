@@ -177,7 +177,7 @@ export const extractInvoiceDate = (text) => {
   const matzikamaDates = text.match(/\b(\d{2}\/\d{2}\/\d{4})\b/g);
   if (matzikamaDates && matzikamaDates.length > 0) {
     
-    return matzikamaDates[0];
+    return dateConverter(matzikamaDates[0]);
   }
 
   // Check for Mustek date format
