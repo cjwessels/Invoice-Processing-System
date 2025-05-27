@@ -5,6 +5,8 @@
   "version": "0.0.2",
   "type": "module",
   "main": "electron/main.js",
+  "description": "Invoice Processing System",
+  "author": "LBC",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -58,8 +60,6 @@
     },
     "linux": {
       "target": "AppImage"
-    },
-    "author": "LBC",
-    "description": "Invoice Processing System"
+    }
   }
 }
