@@ -36,6 +36,22 @@ function fileOperationsMiddleware() {
   return {
     name: 'file-operations',
     configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        // Add CORS headers to all responses
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+        // Handle OPTIONS requests
+        if (req.method === 'OPTIONS') {
+          res.statusCode = 204;
+          res.end();
+          return;
+        }
+
+        next();
+      });
+
       // Create directory endpoint
       server.middlewares.use('/api/create-directory', async (req, res) => {
         if (req.method === 'POST') {
@@ -152,6 +168,11 @@ export default defineConfig({
         target: 'http://localhost:3000',
         changeOrigin: true,
         secure: false,
+        configure: (proxy, options) => {
+          proxy.on('error', (err, req, res) => {
+            console.error('Proxy error:', err);
+          });
+        }
       }
     }
   },
