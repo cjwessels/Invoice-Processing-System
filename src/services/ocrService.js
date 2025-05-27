@@ -1,42 +1,17 @@
-import pdfjs from '../utils/pdfWorker';
-import { extractInvoiceData, extractInvoiceNumber, extractInvoiceDate } from '../utils/invoiceParser';
+import { PDFExtract } from 'pdf.js-extract';
+import { extractInvoiceData } from '../utils/invoiceParser';
 import { matchSupplier } from '../utils/supplierMatcher';
+
+const pdfExtract = new PDFExtract();
 
 export const processPDF = async (file) => {
   try {
     // Convert file to ArrayBuffer
     const arrayBuffer = await file.arrayBuffer();
-
-    // Load the PDF with PDF.js
-    const pdf = await pdfjs.getDocument({ data: arrayBuffer }).promise;
-
-    // Process only the first page for Mustek invoices
-    // For other invoices, we'll still process all pages
-    const pageTexts = [];
     
-    // Always process at least the first page
-    const page = await pdf.getPage(1);
-    const textContent = await page.getTextContent();
-    const pageText = textContent.items.map((item) => item.str).join(' ');
-    pageTexts.push(pageText);
-    
-    // Check if this is a Mustek invoice by looking for "Mustek Limited" in the first page
-    const isMustekInvoice = pageText.includes("Mustek Limited");
-    
-    // If it's not a Mustek invoice, process the remaining pages
-    if (!isMustekInvoice) {
-      for (let i = 2; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const textContent = await page.getTextContent();
-        const pageText = textContent.items.map((item) => item.str).join(' ');
-        pageTexts.push(pageText);
-      }
-    } else {
-      // console.log(`Mustek invoice detected: ${file.name} - Processing only first page`);
-    }
-
-    // Combine all page texts
-    const fullText = pageTexts.join('\n\n');
+    // Extract text from PDF
+    const data = await pdfExtract.extractBuffer(arrayBuffer);
+    const fullText = data.pages.map(page => page.content.map(item => item.str).join(' ')).join('\n\n');
 
     // Extract structured data from text
     const extractedData = extractInvoiceData(fullText, file.name);
@@ -62,7 +37,6 @@ export const processInvoices = async (files) => {
 
   for (const file of files) {
     try {
-      // console.log(`Processing file: ${file.name}`);
       const fileData = await processPDF(file);
 
       // For Mustek invoices, create only one row per file
