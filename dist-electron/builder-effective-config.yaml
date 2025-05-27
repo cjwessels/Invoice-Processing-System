@@ -1,0 +1,16 @@
+directories:
+  output: dist-electron
+  buildResources: build
+appId: com.invoice.processor
+productName: Invoice Processing System
+files:
+  - filter:
+      - dist/**/*
+      - electron/**/*
+win:
+  target: nsis
+mac:
+  target: dmg
+linux:
+  target: AppImage
+electronVersion: 28.3.3
