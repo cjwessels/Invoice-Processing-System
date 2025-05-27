@@ -1,7 +1,8 @@
 {
   "name": "invoice-processing-system-v2",
   "private": true,
-  "version": "0.0.0",
+  "homepage": "http://127.0.0.1/lbc",
+  "version": "0.0.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
