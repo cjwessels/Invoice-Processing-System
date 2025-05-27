@@ -22,7 +22,6 @@ async function deleteFile(filePath, retries = 5, delayMs = 2000) {
       if (error.code === 'EBUSY' && attempt < retries) {
         console.log(`File busy, retrying deletion in ${delayMs}ms... (Attempt ${attempt}/${retries})`);
         await delay(delayMs);
-        // Increase delay for next attempt
         delayMs = delayMs * 1.5;
         continue;
       }
@@ -31,18 +30,15 @@ async function deleteFile(filePath, retries = 5, delayMs = 2000) {
   }
 }
 
-// File operations middleware
 function fileOperationsMiddleware() {
   return {
     name: 'file-operations',
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
-        // Add CORS headers to all responses
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-        // Handle OPTIONS requests
         if (req.method === 'OPTIONS') {
           res.statusCode = 204;
           res.end();
@@ -52,7 +48,6 @@ function fileOperationsMiddleware() {
         next();
       });
 
-      // Create directory endpoint
       server.middlewares.use('/api/create-directory', async (req, res) => {
         if (req.method === 'POST') {
           try {
@@ -81,7 +76,6 @@ function fileOperationsMiddleware() {
         }
       });
 
-      // Move file endpoint
       server.middlewares.use('/api/move-file', async (req, res) => {
         if (req.method === 'POST') {
           try {
@@ -97,11 +91,9 @@ function fileOperationsMiddleware() {
               }
 
               try {
-                // Normalize paths for Windows
                 const normalizedSourcePath = path.normalize(sourcePath);
                 const normalizedTargetPath = path.normalize(targetPath);
 
-                // Check if source file exists
                 try {
                   await fs.access(normalizedSourcePath);
                 } catch (error) {
@@ -110,21 +102,14 @@ function fileOperationsMiddleware() {
                   return;
                 }
 
-                // Create the target directory if it doesn't exist
                 await fs.mkdir(path.dirname(normalizedTargetPath), { recursive: true });
-
-                // First copy the file
                 await copyFile(normalizedSourcePath, normalizedTargetPath);
-
-                // Add a delay before attempting deletion
                 await delay(1000);
 
-                // Then try to delete the original with retries
                 try {
                   await deleteFile(normalizedSourcePath);
                 } catch (error) {
                   console.error('Failed to delete original file:', error);
-                  // If deletion fails, we still consider it a success since the file was copied
                   res.statusCode = 200;
                   res.end(JSON.stringify({ 
                     success: true,
@@ -156,16 +141,18 @@ function fileOperationsMiddleware() {
 
 export default defineConfig({
   plugins: [react(), fileOperationsMiddleware()],
+  base: process.env.ELECTRON === 'true' ? './' : '/',
   build: {
     outDir: 'dist',
     sourcemap: true,
   },
   server: {
-    port: 3000,
-    open: true,
+    port: 5173,
+    strictPort: true,
+    open: false,
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:5173',
         changeOrigin: true,
         secure: false,
         configure: (proxy, options) => {
