@@ -58,6 +58,8 @@
     },
     "linux": {
       "target": "AppImage"
-    }
+    },
+    "author": "LBC",
+    "description": "Invoice Processing System"
   }
 }
